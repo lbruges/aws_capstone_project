@@ -34,3 +34,6 @@ build/
 Fargate/capstone/mvnw.cmd
 Fargate/capstone/mvnw
 Fargate/capstone/.mvn/
+Laura_Fargate/capstone/mvnw
+Laura_Fargate/capstone/mvnw.cmd
+Laura_Fargate/capstone/.mvn/wrapper/maven-wrapper.properties
