@@ -1,5 +1,6 @@
-package com.immune.capstone.utils;
+package com.immune.capstone.utils.impl;
 
+import com.immune.capstone.utils.ByteDocumentGenerator;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
@@ -13,45 +14,49 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Log4j2
 @Component
-public class PdfDocumentGenerator {
+public class PdfDocumentGenerator implements ByteDocumentGenerator {
 
     private static final Font TITLE_FONT = FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, BaseColor.BLACK);
     private static final Font BASE_FONT = FontFactory.getFont(FontFactory.HELVETICA, 11, Font.NORMAL, BaseColor.BLACK);
 
-    /**
-     * https://www.youtube.com/watch?v=_FUCwZ8Hf8w
-     * @param fileContent
-     * @param filename
-     */
-    public void generateDocument(Map<String, String> fileContent, String filename) {
-
-        if (fileContent == null  || fileContent.isEmpty()  || StringUtils.isBlank(filename)) {
+    @Override
+    public Optional<byte[]> generateDocument(Map<String, String> fileContent, String title) {
+        if (fileContent == null  || fileContent.isEmpty()  || StringUtils.isBlank(title)) {
             log.warn("Empty content sent or no filename was sent. Skipping generation.");
-            return;
+            return Optional.empty();
         }
 
+        // Original source: https://www.youtube.com/watch?v=_FUCwZ8Hf8w
         Document doc = new Document();
         try {
-            PdfWriter.getInstance(doc, new FileOutputStream(filename + ".pdf"));
+            var outputStream = new ByteArrayOutputStream();
+            PdfWriter.getInstance(doc, outputStream);
             doc.open();
-            Paragraph par = new Paragraph(filename, TITLE_FONT);
-            doc.add(par);
+            Paragraph titlePar = new Paragraph(title, TITLE_FONT);
+            doc.add(titlePar);
             PdfPTable table = new PdfPTable(fileContent.size());
             generateRowCellsStream(fileContent.keySet(), true).forEach(table::addCell);
             generateRowCellsStream(fileContent.values(), false).forEach(table::addCell);
             doc.add(table);
+
+            Paragraph tsPar = new Paragraph("Generation timestamp: %s".formatted(LocalDateTime.now().toString()), BASE_FONT);
+            doc.add(tsPar);
+
             doc.close();
+            return Optional.of(outputStream.toByteArray());
         } catch (Exception e) {
             log.error("Unable to create pdf file.", e);
+            return Optional.empty();
         }
-
     }
 
     private Stream<PdfPCell> generateRowCellsStream(Collection<String> rowCells, boolean isHeader) {
