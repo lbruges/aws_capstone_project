@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,5 +18,10 @@ public class Utility {
     private String date;
     private double pricePerM3;
     private double utility;
+
+    public Map<String, String> toMap() {
+        return Map.of("Zone", zone, "Date", date, "Price per M3", String.valueOf(pricePerM3), "Utility",
+                String.valueOf(utility));
+    }
 
 }
