@@ -3,36 +3,31 @@ package com.immune.capstone.service.impl;
 import com.immune.capstone.config.properties.RulesProperties;
 import com.immune.capstone.exception.UtilityAppException;
 import com.immune.capstone.model.Utility;
+import com.immune.capstone.service.ConsumptionRetrievalService;
+import com.immune.capstone.service.ProductionRetrievalService;
 import com.immune.capstone.service.UtilityCalculationService;
-import com.immune.capstone.web.client.ConsumptionService;
-import com.immune.capstone.web.client.ProductionService;
 import com.immune.capstone.web.client.model.GasConsumptionSummary;
-import com.immune.capstone.web.client.model.GasProduction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.immune.capstone.utils.ServiceConstants.DATE_FORMATTER;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class UtilityCalculationServiceImpl implements UtilityCalculationService {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM-yyyy");
-
-    private final ConsumptionService consumptionService;
-    private final ProductionService productionService;
+    private final ConsumptionRetrievalService consumptionRtrvlService;
+    private final ProductionRetrievalService productionRtrvlService;
     private final RulesProperties rulesProperties;
 
     @Override
@@ -46,7 +41,7 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
 
         LocalDate targetDate = LocalDate.parse(dateStr, DATE_FORMATTER).withDayOfMonth(1);
 
-        List<GasConsumptionSummary> avgConsumptions = getConsumptionPerZone(availableZones, targetDate);
+        List<GasConsumptionSummary> avgConsumptions = consumptionRtrvlService.getConsumptionPerZone(availableZones, targetDate);
 
         if (avgConsumptions.isEmpty()) {
             log.warn("No consumption data found for prior month.");
@@ -57,7 +52,7 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
                 .map(GasConsumptionSummary::getZone)
                 .collect(Collectors.toSet());
 
-        Map<String, Double> prodCostPerZone = getProdCostPerZone(zonesWithConsumption, targetDate);
+        Map<String, Double> prodCostPerZone = productionRtrvlService.getProdCostPerZone(zonesWithConsumption, targetDate);
         if (prodCostPerZone.isEmpty()) {
             log.warn("No production data found for current month.");
             return Optional.empty();
@@ -69,44 +64,10 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
         return getUtilPerZone(avgConsumptions, prodCostPerZone, currUtil, increment, targetDate);
     }
 
-    private List<GasConsumptionSummary> getConsumptionPerZone(Set<String> availableZones, LocalDate targetDate) {
-
-        return availableZones.stream()
-                .map(zone -> {
-                    try {
-                        return consumptionService.getConsumptionRegisters(zone, targetDate.minusMonths(1)
-                                .format(DATE_FORMATTER));
-                    } catch (Exception e) {
-                        log.warn("Unable to obtain consumption data for {}, skipping.", zone, e);
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .sorted(Comparator.comparingDouble(GasConsumptionSummary::getConsumption))
-                .toList();
-
-    }
-
-    private Map<String, Double> getProdCostPerZone(Collection<String> availableZones, LocalDate targetDate) {
-        return availableZones.stream()
-                .map(zone -> {
-                   try {
-                       return productionService.getMonthProductionCost(zone, targetDate.format(DATE_FORMATTER))
-                               .withZone(zone);
-                   } catch (Exception e) {
-                       log.warn("Unable to obtain production data for {}, skipping.", zone, e);
-                       return null;
-                   }
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toMap(GasProduction::getZone, GasProduction::getCostPerM3, (p1, p2) -> p1));
-    }
 
     private Optional<Map<String, Utility>> getUtilPerZone(List<GasConsumptionSummary> avgConsumptions, Map<String, Double> prodCostPerZone,
-                                                          double initialUtil, double increment, LocalDate targetDate) {
-
-        double currUtil = initialUtil;
-
+                                                          double currUtil, double increment, LocalDate targetDate) {
+        
         Map<String, Utility> utils = new HashMap<>();
         for (var consumption : avgConsumptions) {
             String zone = consumption.getZone();
@@ -126,6 +87,8 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
                     .build();
 
             utils.put(zone, util);
+
+            currUtil += increment;
         }
 
         return Optional.of(utils);
