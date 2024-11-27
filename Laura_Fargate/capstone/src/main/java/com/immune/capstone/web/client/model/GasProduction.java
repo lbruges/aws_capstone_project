@@ -1,22 +1,22 @@
-package com.immune.capstone.web.model;
+package com.immune.capstone.web.client.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GasConsumption {
+public class GasProduction {
 
-    private int month;
-    private int year;
-    private String address;
-    private double consumption;
+    @With
     private String zone;
+    private String date;
+    private double costPerM3;
 
 }

@@ -1,4 +1,4 @@
-package com.immune.capstone.web.model;
+package com.immune.capstone.web.client.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GasProduction {
+public class GasConsumptionSummary {
 
-    private String date;
-    private double costPerM3;
+    private int month;
+    private int year;
+    private double consumption;
+    private String zone;
 
 }
