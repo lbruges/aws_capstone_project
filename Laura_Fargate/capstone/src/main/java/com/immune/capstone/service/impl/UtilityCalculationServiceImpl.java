@@ -34,13 +34,14 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
 
     @Override
     public Optional<Map<String, Utility>> calculateUtility(String dateStr, Map<String, Utility> existingUtils) {
-        LocalDate targetDate = LocalDate.parse(dateStr, DATE_FORMATTER).withDayOfMonth(1);
-
         Set<String> zonesToQuery = rulesProperties.getAvailableZones()
                 .stream()
                 .filter(zone -> !existingUtils.containsKey(zone))
                 .collect(Collectors.toSet());
 
+        LocalDate targetDate = LocalDate.parse(dateStr, DATE_FORMATTER).withDayOfMonth(1);
+
+        // Historical consumption, 1 month prior
         List<GasConsumptionSummary> avgConsumptions = consumptionRtrvlService.getConsumptionPerZone(zonesToQuery,
                 targetDate);
 
