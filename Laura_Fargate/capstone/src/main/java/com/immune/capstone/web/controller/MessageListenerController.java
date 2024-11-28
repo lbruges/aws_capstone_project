@@ -1,9 +1,9 @@
-package com.immune.capstone.controller;
+package com.immune.capstone.web.controller;
 
 import com.immune.capstone.model.ReportMessage;
 
 public interface MessageListenerController {
 
-    void listen(ReportMessage message);
+    void onMessage(ReportMessage message);
 
 }
