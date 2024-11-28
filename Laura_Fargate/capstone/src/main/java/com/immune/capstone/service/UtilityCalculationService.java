@@ -4,10 +4,9 @@ import com.immune.capstone.model.Utility;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 public interface UtilityCalculationService {
 
-    Optional<Map<String, Utility>> calculateUtility(String dateStr, Set<String> zonesToQuery);
+    Optional<Map<String, Utility>> calculateUtility(String dateStr, Map<String, Utility> existingUtils);
 
 }

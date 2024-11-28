@@ -1,6 +1,7 @@
 package com.immune.capstone.web.controller.impl;
 
 import com.immune.capstone.config.properties.RulesProperties;
+import com.immune.capstone.exception.UtilityAppException;
 import com.immune.capstone.model.Utility;
 import com.immune.capstone.persistence.dao.UtilityDAO;
 import com.immune.capstone.service.ReportStorageService;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Log4j2
 @Controller
@@ -33,22 +32,16 @@ public class MessageListenerControllerImpl implements MessageListenerController 
     @SqsListener(UTILITIES_QUEUE_NAME)
     public void onMessage(ReportMessage message) {
         Map<String, Utility> utilitiesByZone = new HashMap<>(utilityDAO.getUtilsByZonePerDate(message.getDate()));
+        utilitiesByZone.remove(message.getZoneId()); // force refresh
 
-        Set<String> targetZones = rulesProperties.getAvailableZones()
-                .stream()
-                .filter(zone -> !utilitiesByZone.containsKey(zone))
-                .collect(Collectors.toSet());
-
-        // Force refresh for target zone and others that were not found
-        targetZones.add(message.getZoneId());
-        var utilitiesOpt = calculationService.calculateUtility(message.getDate(), targetZones);
+        var utilitiesOpt = calculationService.calculateUtility(message.getDate(), utilitiesByZone);
 
         if (utilitiesOpt.isEmpty()) {
             log.warn("Unable to recalculate utilities, aborting operation.");
-            return;
+            throw new UtilityAppException("Unable to recalculate utils, even for the specified zone id: " +
+                    message.getZoneId());
         }
 
-        utilitiesByZone.putAll(utilitiesOpt.get());
         utilitiesByZone.values().forEach(this::persistAndSend);
     }
 

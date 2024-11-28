@@ -42,12 +42,6 @@ public class UtilityDAOImpl implements UtilityDAO {
     }
 
     @Override
-    public Utility update(Utility utility) {
-        UtilityEntity entity = dbTemplate.update(mapper.toEntity(utility));
-        return mapper.toModel(entity);
-    }
-
-    @Override
     public Map<String, Utility> getUtilsByZonePerDate(String targetDate) {
         Map<String, Utility> utilsByZone = new HashMap<>();
 
