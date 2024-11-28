@@ -31,17 +31,10 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
     private final RulesProperties rulesProperties;
 
     @Override
-    public Optional<Map<String, Utility>> calculateUtility(String dateStr, String zoneId) {
-        var availableZones = rulesProperties.getAvailableZones();
-
-        if (!availableZones.contains(zoneId)) {
-            log.warn("Zone id {} not available in configured zones {}", zoneId, availableZones);
-            throw new UtilityAppException("Zone " + zoneId + " not available.");
-        }
-
+    public Optional<Map<String, Utility>> calculateUtility(String dateStr, Set<String> zonesToQuery) {
         LocalDate targetDate = LocalDate.parse(dateStr, DATE_FORMATTER).withDayOfMonth(1);
 
-        List<GasConsumptionSummary> avgConsumptions = consumptionRtrvlService.getConsumptionPerZone(availableZones, targetDate);
+        List<GasConsumptionSummary> avgConsumptions = consumptionRtrvlService.getConsumptionPerZone(zonesToQuery, targetDate);
 
         if (avgConsumptions.isEmpty()) {
             log.warn("No consumption data found for prior month.");
