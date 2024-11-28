@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface UtilityCalculationService {
 
-    Optional<Map<String, Utility>> calculateUtility(String dateStr, String zoneId);
+    Optional<Map<String, Utility>> calculateUtility(String dateStr, Map<String, Utility> existingUtils);
 
 }

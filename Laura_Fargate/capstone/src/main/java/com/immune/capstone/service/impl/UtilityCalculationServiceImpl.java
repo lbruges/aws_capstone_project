@@ -12,11 +12,14 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import static com.immune.capstone.utils.ServiceConstants.DATE_FORMATTER;
@@ -31,17 +34,16 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
     private final RulesProperties rulesProperties;
 
     @Override
-    public Optional<Map<String, Utility>> calculateUtility(String dateStr, String zoneId) {
-        var availableZones = rulesProperties.getAvailableZones();
-
-        if (!availableZones.contains(zoneId)) {
-            log.warn("Zone id {} not available in configured zones {}", zoneId, availableZones);
-            throw new UtilityAppException("Zone " + zoneId + " not available.");
-        }
-
+    public Optional<Map<String, Utility>> calculateUtility(String dateStr, Map<String, Utility> existingUtils) {
         LocalDate targetDate = LocalDate.parse(dateStr, DATE_FORMATTER).withDayOfMonth(1);
 
-        List<GasConsumptionSummary> avgConsumptions = consumptionRtrvlService.getConsumptionPerZone(availableZones, targetDate);
+        Set<String> zonesToQuery = rulesProperties.getAvailableZones()
+                .stream()
+                .filter(zone -> !existingUtils.containsKey(zone))
+                .collect(Collectors.toSet());
+
+        List<GasConsumptionSummary> avgConsumptions = consumptionRtrvlService.getConsumptionPerZone(zonesToQuery,
+                targetDate);
 
         if (avgConsumptions.isEmpty()) {
             log.warn("No consumption data found for prior month.");
@@ -61,14 +63,23 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
         double currUtil = rulesProperties.getUtility().getMinPenalty();
         double increment = rulesProperties.getUtility().getPenaltyIncrement();
 
-        return getUtilPerZone(avgConsumptions, prodCostPerZone, currUtil, increment, targetDate);
+        SortedSet<Double> sortedUtils = generateSortedUtils(rulesProperties.getAvailableZones().size(), currUtil,
+                increment, existingUtils.values());
+
+        Map<String, Utility> allUtils = new HashMap<>(getUtilPerZone(avgConsumptions, prodCostPerZone, targetDate,
+                sortedUtils));
+
+        allUtils.putAll(existingUtils);
+
+        return Optional.of(allUtils);
     }
 
+    private Map<String, Utility> getUtilPerZone(List<GasConsumptionSummary> avgConsumptions,
+                                                          Map<String, Double> prodCostPerZone,
+                                                          LocalDate targetDate, SortedSet<Double> sortedUtils) {
 
-    private Optional<Map<String, Utility>> getUtilPerZone(List<GasConsumptionSummary> avgConsumptions, Map<String, Double> prodCostPerZone,
-                                                          double currUtil, double increment, LocalDate targetDate) {
-        
         Map<String, Utility> utils = new HashMap<>();
+
         for (var consumption : avgConsumptions) {
             String zone = consumption.getZone();
             String dateStr = targetDate.format(DATE_FORMATTER);
@@ -78,20 +89,37 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
                 continue;
             }
 
+            var utility = sortedUtils.first();
+
             Utility util = Utility.builder()
                     .id(zone + "_" + dateStr)
                     .zone(zone)
                     .date(dateStr)
-                    .pricePerM3(cost * (1 + currUtil))
-                    .utility(currUtil)
+                    .pricePerM3(cost * (1 + utility))
+                    .utility(utility)
                     .build();
 
             utils.put(zone, util);
+            sortedUtils.remove(utility);
+        }
 
+        return utils;
+    }
+
+    private SortedSet<Double> generateSortedUtils(int size, double currUtil, double increment,
+                                                  Collection<Utility> currUtils) {
+        SortedSet<Double> sortedUtils = new TreeSet<>();
+
+        for (int i = 0; i < size; i++) {
+            sortedUtils.add(currUtil);
             currUtil += increment;
         }
 
-        return Optional.of(utils);
+        currUtils.stream()
+                .filter(util -> sortedUtils.contains(util.getUtility()))
+                .forEach(util -> sortedUtils.remove(util.getUtility()));
+
+        return sortedUtils;
     }
 
 }
