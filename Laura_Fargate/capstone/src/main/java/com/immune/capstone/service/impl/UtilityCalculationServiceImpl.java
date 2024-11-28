@@ -66,12 +66,8 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
         SortedSet<Double> sortedUtils = generateSortedUtils(rulesProperties.getAvailableZones().size(), currUtil,
                 increment, existingUtils.values());
 
-        Map<String, Utility> allUtils = new HashMap<>(getUtilPerZone(avgConsumptions, prodCostPerZone, targetDate,
+        return Optional.of(getUtilPerZone(avgConsumptions, prodCostPerZone, targetDate,
                 sortedUtils));
-
-        allUtils.putAll(existingUtils);
-
-        return Optional.of(allUtils);
     }
 
     private Map<String, Utility> getUtilPerZone(List<GasConsumptionSummary> avgConsumptions,
