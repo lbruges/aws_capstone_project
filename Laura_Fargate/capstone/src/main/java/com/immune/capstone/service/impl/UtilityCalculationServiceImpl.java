@@ -1,7 +1,6 @@
 package com.immune.capstone.service.impl;
 
 import com.immune.capstone.config.properties.RulesProperties;
-import com.immune.capstone.exception.UtilityAppException;
 import com.immune.capstone.model.Utility;
 import com.immune.capstone.service.ConsumptionRetrievalService;
 import com.immune.capstone.service.ProductionRetrievalService;
