@@ -67,7 +67,6 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
 
     private Optional<Map<String, Utility>> getUtilPerZone(List<GasConsumptionSummary> avgConsumptions, Map<String, Double> prodCostPerZone,
                                                           double currUtil, double increment, LocalDate targetDate) {
-        
         Map<String, Utility> utils = new HashMap<>();
         for (var consumption : avgConsumptions) {
             String zone = consumption.getZone();

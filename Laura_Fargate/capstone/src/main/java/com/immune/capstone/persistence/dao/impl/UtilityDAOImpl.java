@@ -1,12 +1,14 @@
-package com.immune.capstone.persistence.repository.impl;
+package com.immune.capstone.persistence.dao.impl;
 
 import com.immune.capstone.config.properties.DynamoDbProperties;
+import com.immune.capstone.mapper.UtilityMapper;
+import com.immune.capstone.model.Utility;
 import com.immune.capstone.persistence.entity.UtilityEntity;
-import com.immune.capstone.persistence.repository.UtilityRepository;
+import com.immune.capstone.persistence.dao.UtilityDAO;
 import io.awspring.cloud.dynamodb.DynamoDbTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbIndex;
@@ -24,27 +26,30 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.immune.capstone.persistence.utils.DynamoDbConstants.DYNAMO_DATE_SEC_INDEX;
 
 @Log4j2
-@Repository
+@Component
 @RequiredArgsConstructor
-public class UtilityRepositoryImpl implements UtilityRepository {
+public class UtilityDAOImpl implements UtilityDAO {
 
     private final DynamoDbTemplate dbTemplate;
     private final DynamoDbEnhancedClient enhancedClient;
     private final DynamoDbProperties properties;
+    private final UtilityMapper mapper;
 
     @Override
-    public UtilityEntity save(UtilityEntity entity) {
-        return dbTemplate.save(entity);
+    public Utility save(Utility utility) {
+        UtilityEntity entity = dbTemplate.save(mapper.toEntity(utility));
+        return mapper.toModel(entity);
     }
 
     @Override
-    public UtilityEntity update(UtilityEntity entity) {
-        return dbTemplate.update(entity);
+    public Utility update(Utility utility) {
+        UtilityEntity entity = dbTemplate.update(mapper.toEntity(utility));
+        return mapper.toModel(entity);
     }
 
     @Override
-    public Map<String, UtilityEntity> getUtilsByZonePerDate(String targetDate) {
-        Map<String, UtilityEntity> utilsByZone = new HashMap<>();
+    public Map<String, Utility> getUtilsByZonePerDate(String targetDate) {
+        Map<String, Utility> utilsByZone = new HashMap<>();
 
         DynamoDbIndex<UtilityEntity> dateSecIndex = enhancedClient.table(properties.getTableName(),
                 TableSchema.fromBean(UtilityEntity.class))
@@ -70,7 +75,7 @@ public class UtilityRepositoryImpl implements UtilityRepository {
             String zoneId = entity.getZone();
             log.info("Fetching utilities for zone id {} and month {}", zoneId, targetDate);
 
-            utilsByZone.put(zoneId, entity);
+            utilsByZone.put(zoneId, mapper.toModel(entity));
             atomicInteger.incrementAndGet();
         });
 
