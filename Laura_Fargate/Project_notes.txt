@@ -76,3 +76,13 @@ awslocal --endpoint-url=http://localhost:4566 sqs send-message  --queue-url http
 
 
 awslocal sqs purge-queue --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/utilities_queue
+
+
+awslocal s3api list-objects --bucket capstone-gas-utils-reports-202412
+
+
+awslocal dynamodb list-tables --region us-east-1
+
+http://localhost:4566/capstone-gas-utils-reports-202412/D_11-2024.pdf
+
+awslocal s3 ls s3://capstone-gas-utils-reports-202412
