@@ -22,8 +22,8 @@ public class RulesProperties {
     @AllArgsConstructor
     public static class UtilityConfig {
 
-        private double minPenalty = 0.1;
-        private double penaltyIncrement = 0.05;
+        private float minPenalty = 0.1f;
+        private float penaltyIncrement = 0.05f;
 
     }
 

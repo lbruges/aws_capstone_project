@@ -23,7 +23,7 @@ public class ProductionRetrievalServiceImpl implements ProductionRetrievalServic
     private final ProductionService productionService;
 
     @Override
-    public Map<String, Double> getProdCostPerZone(Collection<String> availableZones, LocalDate targetDate) {
+    public Map<String, Float> getProdCostPerZone(Collection<String> availableZones, LocalDate targetDate) {
         return availableZones.stream()
                 .map(zone -> {
                     try {

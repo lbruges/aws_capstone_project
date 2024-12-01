@@ -17,6 +17,6 @@ public class GasProduction {
     @With
     private String zone;
     private String date;
-    private double costPerM3;
+    private float costPerM3;
 
 }

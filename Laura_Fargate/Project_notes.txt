@@ -71,3 +71,8 @@ awslocal dynamodb list-tables --region us-east-1
 awslocal s3api create-bucket --bucket capstone-gas-utils-reports-202412
 
 mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
+
+awslocal --endpoint-url=http://localhost:4566 sqs send-message  --queue-url http://localhost:4566/000000000000/utilities_queue --region us-east-1  --message-body "{\"zoneId\": \"A\", \"date\": \"11-2024\"}"
+
+
+awslocal sqs purge-queue --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/utilities_queue

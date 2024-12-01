@@ -19,10 +19,8 @@ import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.immune.capstone.persistence.utils.DynamoDbConstants.DYNAMO_DATE_SEC_INDEX;
 
@@ -63,22 +61,22 @@ public class UtilityDAOImpl implements UtilityDAO {
                         .build()
         );
 
-        if (!results.iterator().hasNext()) {
-            return Collections.emptyMap();
+        for (var page : results) {
+            if (page.items() == null || page.items().size() == 0) {
+                log.warn("No results found for target date {}", targetDate);
+                continue;
+            }
+
+            page.items().forEach(entity -> addUtilToMap(entity, utilsByZone, targetDate));
         }
 
-        AtomicInteger atomicInteger = new AtomicInteger();
-        atomicInteger.set(0);
-
-        results.forEach(page -> {
-            UtilityEntity entity = page.items().get(atomicInteger.get());
-            String zoneId = entity.getZone();
-            log.info("Fetching utilities for zone id {} and month {}", zoneId, targetDate);
-
-            utilsByZone.put(zoneId, mapper.toModel(entity));
-            atomicInteger.incrementAndGet();
-        });
-
         return utilsByZone;
+    }
+
+    private void addUtilToMap(UtilityEntity entity, Map<String, Utility> utilsByZone, String targetDate) {
+        String zoneId = entity.getZone();
+        log.info("Fetching utilities for zone id {} and month {}", zoneId, targetDate);
+
+        utilsByZone.put(zoneId, mapper.toModel(entity));
     }
 }

@@ -1,8 +1,5 @@
 package com.immune.capstone.web.controller.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.immune.capstone.config.properties.RulesProperties;
 import com.immune.capstone.exception.UtilityAppException;
 import com.immune.capstone.model.Utility;
 import com.immune.capstone.persistence.dao.UtilityDAO;
@@ -41,7 +38,7 @@ public class MessageListenerControllerImpl implements MessageListenerController 
                     message.getZoneId());
         }
 
-        utilitiesByZone.values().forEach(this::persistAndSend);
+        utilitiesOpt.get().values().forEach(this::persistAndSend);
     }
 
     private void persistAndSend(Utility util) {

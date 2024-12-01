@@ -5,6 +5,6 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface ProductionRetrievalService {
-    Map<String, Double> getProdCostPerZone(Collection<String> availableZones, LocalDate targetDate);
+    Map<String, Float> getProdCostPerZone(Collection<String> availableZones, LocalDate targetDate);
 
 }

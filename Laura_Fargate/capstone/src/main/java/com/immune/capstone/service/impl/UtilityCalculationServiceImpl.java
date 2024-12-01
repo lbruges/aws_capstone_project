@@ -39,7 +39,7 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
                 .filter(zone -> !existingUtils.containsKey(zone))
                 .collect(Collectors.toSet());
 
-        LocalDate targetDate = LocalDate.parse(dateStr, DATE_FORMATTER).withDayOfMonth(1);
+        LocalDate targetDate = LocalDate.parse(dateStr, DATE_FORMATTER);
 
         // Historical consumption, 1 month prior
         List<GasConsumptionSummary> avgConsumptions = consumptionRtrvlService.getConsumptionPerZone(zonesToQuery,
@@ -54,16 +54,16 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
                 .map(GasConsumptionSummary::getZone)
                 .collect(Collectors.toSet());
 
-        Map<String, Double> prodCostPerZone = productionRtrvlService.getProdCostPerZone(zonesWithConsumption, targetDate);
+        Map<String, Float> prodCostPerZone = productionRtrvlService.getProdCostPerZone(zonesWithConsumption, targetDate);
         if (prodCostPerZone.isEmpty()) {
             log.warn("No production data found for current month.");
             return Optional.empty();
         }
 
-        double currUtil = rulesProperties.getUtility().getMinPenalty();
-        double increment = rulesProperties.getUtility().getPenaltyIncrement();
+        float currUtil = rulesProperties.getUtility().getMinPenalty();
+        float increment = rulesProperties.getUtility().getPenaltyIncrement();
 
-        SortedSet<Double> sortedUtils = generateSortedUtils(rulesProperties.getAvailableZones().size(), currUtil,
+        SortedSet<Float> sortedUtils = generateSortedUtils(rulesProperties.getAvailableZones().size(), currUtil,
                 increment, existingUtils.values());
 
         return Optional.of(getUtilPerZone(avgConsumptions, prodCostPerZone, targetDate,
@@ -71,8 +71,8 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
     }
 
     private Map<String, Utility> getUtilPerZone(List<GasConsumptionSummary> avgConsumptions,
-                                                          Map<String, Double> prodCostPerZone,
-                                                          LocalDate targetDate, SortedSet<Double> sortedUtils) {
+                                                          Map<String, Float> prodCostPerZone,
+                                                          LocalDate targetDate, SortedSet<Float> sortedUtils) {
 
         Map<String, Utility> utils = new HashMap<>();
 
@@ -80,7 +80,7 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
             String zone = consumption.getZone();
             String dateStr = targetDate.format(DATE_FORMATTER);
 
-            Double cost = prodCostPerZone.get(zone);
+            Float cost = prodCostPerZone.get(zone);
             if (cost == null) {
                 continue;
             }
@@ -102,9 +102,9 @@ public class UtilityCalculationServiceImpl implements UtilityCalculationService 
         return utils;
     }
 
-    private SortedSet<Double> generateSortedUtils(int size, double currUtil, double increment,
+    private SortedSet<Float> generateSortedUtils(int size, float currUtil, float increment,
                                                   Collection<Utility> currUtils) {
-        SortedSet<Double> sortedUtils = new TreeSet<>();
+        SortedSet<Float> sortedUtils = new TreeSet<>();
 
         for (int i = 0; i < size; i++) {
             sortedUtils.add(currUtil);
