@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbIndex;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
@@ -28,16 +29,15 @@ import static com.immune.capstone.persistence.utils.DynamoDbConstants.DYNAMO_DAT
 @Component
 @RequiredArgsConstructor
 public class UtilityDAOImpl implements UtilityDAO {
-
-    private final DynamoDbTemplate dbTemplate;
     private final DynamoDbEnhancedClient enhancedClient;
     private final DynamoDbProperties properties;
     private final UtilityMapper mapper;
 
     @Override
-    public Utility save(Utility utility) {
-        UtilityEntity entity = dbTemplate.save(mapper.toEntity(utility));
-        return mapper.toModel(entity);
+    public void save(Utility utility) {
+        DynamoDbTable<UtilityEntity> utilTable = enhancedClient.table(properties.getTableName(),
+                TableSchema.fromBean(UtilityEntity.class));
+        utilTable.putItem(mapper.toEntity(utility));
     }
 
     @Override
