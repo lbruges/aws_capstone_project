@@ -1,3 +1,5 @@
+docker-compose -f docker-compose-deps.yml up
+
 awslocal sqs create-queue --queue-name utilities_queue
 {
  "QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/utilities_queue"
@@ -61,3 +63,9 @@ awslocal dynamodb list-tables --region us-east-1
     "pricePerM3": 12.6,
     "utility": 0.2  
 }
+
+
+
+
+
+awslocal s3api create-bucket --bucket capstone-gas-utils-reports-202412
