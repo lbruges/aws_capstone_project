@@ -19,6 +19,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,8 +63,13 @@ public class UtilityDAOImpl implements UtilityDAO {
                         .build()
         );
 
+        if (!results.iterator().hasNext()) {
+            return Collections.emptyMap();
+        }
+
         AtomicInteger atomicInteger = new AtomicInteger();
         atomicInteger.set(0);
+
         results.forEach(page -> {
             UtilityEntity entity = page.items().get(atomicInteger.get());
             String zoneId = entity.getZone();

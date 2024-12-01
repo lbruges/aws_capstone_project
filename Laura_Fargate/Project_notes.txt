@@ -69,3 +69,5 @@ awslocal dynamodb list-tables --region us-east-1
 
 
 awslocal s3api create-bucket --bucket capstone-gas-utils-reports-202412
+
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"

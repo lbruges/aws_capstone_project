@@ -11,8 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "aws.dynamodb")
 public class DynamoDbProperties {
 
-    private String accessKey;
-    private String secretKey;
     private String endpointOverride;
     private String region;
     private String tableName;
