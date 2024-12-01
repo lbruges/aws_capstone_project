@@ -1,0 +1,527 @@
+{
+	"info": {
+		"_postman_id": "642729dd-24f2-45dc-ba20-232c495ac457",
+		"name": "Capstone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Consumption",
+			"item": [
+				{
+					"name": "Consumption_zoneA",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/consumption/A/{{minus_month}}-{{minus_year}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"consumption",
+								"A",
+								"{{minus_month}}-{{minus_year}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Consumption_zoneA",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/api/consumption/A/{{minus_month}}-{{minus_year}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"consumption",
+										"A",
+										"{{minus_month}}-{{minus_year}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"month\": \"{{minus_month}}\",\n    \"year\": \"{{minus_year}}\",\n    \"avgConsumption\": 200,\n    \"zone\": \"A\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Consumption_zoneB",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/consumption/B/{{minus_month}}-{{minus_year}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"consumption",
+								"B",
+								"{{minus_month}}-{{minus_year}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Consumption_zoneB",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/api/consumption/B/{{minus_month}}-{{minus_year}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"consumption",
+										"B",
+										"{{minus_month}}-{{minus_year}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\r\n    \"month\": \"{{minus_month}}\",\r\n    \"year\": \"{{minus_year}}\",\r\n    \"consumption\": 180,\r\n    \"zone\": \"B\"\r\n}"
+						}
+					]
+				},
+				{
+					"name": "Consumption_zoneC",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/consumption/C/{{minus_month}}-{{minus_year}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"consumption",
+								"C",
+								"{{minus_month}}-{{minus_year}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Consumption_zoneC",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/api/consumption/C/{{minus_month}}-{{minus_year}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"consumption",
+										"C",
+										"{{minus_month}}-{{minus_year}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\r\n    \"month\": \"{{minus_month}}\",\r\n    \"year\": \"{{minus_year}}\",\r\n    \"consumption\": 190,\r\n    \"zone\": \"C\"\r\n}"
+						}
+					]
+				},
+				{
+					"name": "Consumption_zoneD",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/consumption/D/{{minus_month}}-{{minus_year}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"consumption",
+								"D",
+								"{{minus_month}}-{{minus_year}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Consumption_zoneD",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/api/consumption/D/{{minus_month}}-{{minus_year}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"consumption",
+										"D",
+										"{{minus_month}}-{{minus_year}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"month\": \"{{minus_month}}\",\n    \"year\": \"{{minus_year}}\",\n    \"consumption\": 210,\n    \"zone\": \"D\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Production",
+			"item": [
+				{
+					"name": "Production_zoneA",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/production/A/{{month}}-{{year}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"A",
+								"{{month}}-{{year}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Production_zoneA",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/production/A/{{month}}-{{year}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"production",
+										"A",
+										"{{month}}-{{year}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\r\n    \"zone\": \"A\",\r\n    \"date\": \"{{month}}-{{year}}\",\r\n    \"costPerM3\": \"14\"\r\n}"
+						}
+					]
+				},
+				{
+					"name": "Production_zoneB",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/production/B/{{month}}-{{year}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"B",
+								"{{month}}-{{year}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Production_zoneB",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/production/B/{{month}}-{{year}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"production",
+										"B",
+										"{{month}}-{{year}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\r\n    \"zone\": \"B\",\r\n    \"date\": \"{{month}}-{{year}}\",\r\n    \"costPerM3\": \"10\"\r\n}"
+						}
+					]
+				},
+				{
+					"name": "Production_zoneC",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/production/C/{{month}}-{{year}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"C",
+								"{{month}}-{{year}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Production_zoneC",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/production/C/{{month}}-{{year}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"production",
+										"C",
+										"{{month}}-{{year}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\r\n    \"zone\": \"C\",\r\n    \"date\": \"{{month}}-{{year}}\",\r\n    \"costPerM3\": \"12\"\r\n}"
+						}
+					]
+				},
+				{
+					"name": "Production_zoneD",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/production/D/{{month}}-{{year}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"D",
+								"{{month}}-{{year}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Production_zoneD",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/production/D/{{month}}-{{year}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"production",
+										"D",
+										"{{month}}-{{year}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\r\n    \"zone\": \"D\",\r\n    \"date\": \"{{month}}-{{year}}\",\r\n    \"costPerM3\": \"20\"\r\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}

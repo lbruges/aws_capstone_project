@@ -15,7 +15,7 @@ public class GasConsumptionSummary {
 
     private int month;
     private int year;
-    private float consumption;
+    private float avgConsumption;
     private String zone;
 
 }

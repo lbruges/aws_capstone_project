@@ -28,14 +28,14 @@ public class MessageListenerControllerImpl implements MessageListenerController 
     @SqsListener("${aws.sqs.queue-name:utilities_queue}")
     public void onMessage(ReportMessage message) {
         Map<String, Utility> utilitiesByZone = new HashMap<>(utilityDAO.getUtilsByZonePerDate(message.getDate()));
-        utilitiesByZone.remove(message.getZoneId()); // force refresh
+        utilitiesByZone.remove(message.getZone()); // force refresh
 
         var utilitiesOpt = calculationService.calculateUtility(message.getDate(), utilitiesByZone);
 
         if (utilitiesOpt.isEmpty()) {
             log.warn("Unable to recalculate utilities, aborting operation.");
             throw new UtilityAppException("Unable to recalculate utils, even for the specified zone id: " +
-                    message.getZoneId());
+                    message.getZone());
         }
 
         utilitiesOpt.get().values().forEach(this::persistAndSend);

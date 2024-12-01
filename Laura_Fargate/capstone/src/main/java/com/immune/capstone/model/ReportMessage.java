@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReportMessage {
 
-    private String zoneId;
+    private String zone;
     private String date;
 
 }

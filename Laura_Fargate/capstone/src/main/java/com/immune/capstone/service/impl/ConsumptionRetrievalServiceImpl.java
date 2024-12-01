@@ -35,7 +35,7 @@ public class ConsumptionRetrievalServiceImpl implements ConsumptionRetrievalServ
                     }
                 })
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparingDouble(GasConsumptionSummary::getConsumption))
+                .sorted(Comparator.comparingDouble(GasConsumptionSummary::getAvgConsumption))
                 .toList();
     }
 
