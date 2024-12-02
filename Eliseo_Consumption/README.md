@@ -1,0 +1,2 @@
+Run:
+pip install Faker
