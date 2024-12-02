@@ -26,12 +26,18 @@ public class ProductionRetrievalServiceImpl implements ProductionRetrievalServic
     public Map<String, Float> getProdCostPerZone(Collection<String> availableZones, LocalDate targetDate) {
         return availableZones.stream()
                 .map(zone -> {
+                    String dateStr = targetDate.format(DATE_FORMATTER);
+
                     try {
-                        return productionService.getMonthProductionCost(zone, targetDate.format(DATE_FORMATTER))
+                        return productionService.getMonthProductionCost(zone, dateStr)
                                 .withZone(zone);
                     } catch (Exception e) {
-                        log.warn("Unable to obtain production data for {}, skipping.", zone, e);
-                        return null;
+                        log.warn("Unable to obtain production data for {}, using default value.", zone, e);
+                        return GasProduction.builder()
+                                .costPerM3(10)
+                                .date(dateStr)
+                                .zone(zone)
+                                .build();
                     }
                 })
                 .filter(Objects::nonNull)

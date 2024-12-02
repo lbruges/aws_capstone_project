@@ -26,12 +26,17 @@ public class ConsumptionRetrievalServiceImpl implements ConsumptionRetrievalServ
     public List<GasConsumptionSummary> getConsumptionPerZone(Set<String> availableZones, LocalDate targetDate) {
         return availableZones.stream()
                 .map(zone -> {
+                    LocalDate pastMonth = targetDate.minusMonths(1);
                     try {
-                        return consumptionService.getConsumptionRegisters(zone, targetDate.minusMonths(1)
-                                .format(DATE_FORMATTER));
+                        return consumptionService.getConsumptionRegisters(zone, pastMonth.format(DATE_FORMATTER));
                     } catch (Exception e) {
-                        log.warn("Unable to obtain consumption data for {}, skipping.", zone, e);
-                        return null;
+                        log.warn("Unable to obtain consumption data for {}, using default values.", zone, e);
+                        return GasConsumptionSummary.builder()
+                                .zone(zone)
+                                .year(pastMonth.getYear())
+                                .month(pastMonth.getMonthValue())
+                                .avgConsumption(100)
+                                .build();
                     }
                 })
                 .filter(Objects::nonNull)
