@@ -47,5 +47,6 @@ public class ReportStorageServiceImpl implements ReportStorageService {
                 .build();
 
         s3Client.putObject(request, RequestBody.fromInputStream(inputStream, reportContent.length));
+        log.info("A new report has been generated for {}" , utilityId);
     }
 }

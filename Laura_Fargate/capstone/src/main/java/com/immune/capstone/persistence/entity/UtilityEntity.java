@@ -23,8 +23,8 @@ public class UtilityEntity {
     private String id; // composite - zone_date
     private String zone;
     private String date;
-    private double pricePerM3;
-    private double utility;
+    private float pricePerM3;
+    private float utility;
 
     @DynamoDbPartitionKey
     public String getId() {
@@ -44,12 +44,12 @@ public class UtilityEntity {
     }
 
     @DynamoDbAttribute("price_per_m3")
-    public double getPricePerM3() {
+    public float getPricePerM3() {
         return pricePerM3;
     }
 
     @DynamoDbAttribute("utility")
-    public double getUtility() {
+    public float getUtility() {
         return utility;
     }
 

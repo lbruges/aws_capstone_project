@@ -1,6 +1,5 @@
 package com.immune.capstone.web.controller.impl;
 
-import com.immune.capstone.config.properties.RulesProperties;
 import com.immune.capstone.exception.UtilityAppException;
 import com.immune.capstone.model.Utility;
 import com.immune.capstone.persistence.dao.UtilityDAO;
@@ -21,28 +20,25 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MessageListenerControllerImpl implements MessageListenerController {
 
-    private static final String UTILITIES_QUEUE_NAME = "utilities_queue";
-
     private final UtilityCalculationService calculationService;
     private final ReportStorageService reportStorageService;
-    private final RulesProperties rulesProperties;
     private final UtilityDAO utilityDAO;
 
     @Override
-    @SqsListener(UTILITIES_QUEUE_NAME)
+    @SqsListener("${aws.sqs.queue-name:utilities_queue}")
     public void onMessage(ReportMessage message) {
         Map<String, Utility> utilitiesByZone = new HashMap<>(utilityDAO.getUtilsByZonePerDate(message.getDate()));
-        utilitiesByZone.remove(message.getZoneId()); // force refresh
+        utilitiesByZone.remove(message.getZone()); // force refresh
 
         var utilitiesOpt = calculationService.calculateUtility(message.getDate(), utilitiesByZone);
 
         if (utilitiesOpt.isEmpty()) {
             log.warn("Unable to recalculate utilities, aborting operation.");
             throw new UtilityAppException("Unable to recalculate utils, even for the specified zone id: " +
-                    message.getZoneId());
+                    message.getZone());
         }
 
-        utilitiesByZone.values().forEach(this::persistAndSend);
+        utilitiesOpt.get().values().forEach(this::persistAndSend);
     }
 
     private void persistAndSend(Utility util) {

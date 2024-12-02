@@ -14,6 +14,7 @@ public class UtilityMapperImpl implements UtilityMapper {
                 .date(utility.getDate())
                 .pricePerM3(utility.getPricePerM3())
                 .utility(utility.getUtility())
+                .zone(utility.getZone())
                 .build();
     }
 

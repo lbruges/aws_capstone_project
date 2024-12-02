@@ -1,3 +1,5 @@
+docker-compose -f docker-compose-deps.yml up
+
 awslocal sqs create-queue --queue-name utilities_queue
 {
  "QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/utilities_queue"
@@ -61,3 +63,28 @@ awslocal dynamodb list-tables --region us-east-1
     "pricePerM3": 12.6,
     "utility": 0.2  
 }
+
+
+
+
+
+awslocal s3api create-bucket --bucket capstone-gas-utils-reports-202412
+
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
+
+awslocal --endpoint-url=http://localhost:4566 sqs send-message  --queue-url http://localhost:4566/000000000000/utilities_queue --region us-east-1  --message-body "{\"zone\": \"A\", \"date\": \"11-2024\"}"
+
+
+awslocal sqs purge-queue --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/utilities_queue
+
+
+awslocal s3api list-objects --bucket capstone-gas-utils-reports-202412
+
+
+awslocal dynamodb list-tables --region us-east-1
+
+http://localhost:4566/capstone-gas-utils-reports-202412/D_11-2024.pdf
+
+awslocal s3 ls s3://capstone-gas-utils-reports-202412
+
+awslocal --endpoint-url=http://localhost:4566 sqs send-message  --queue-url http://localhost:4566/000000000000/utilities_queue --region us-east-1  --message-body "{\"zone\": \"A\", \"date\": \"01-2025\"}"

@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.regions.Region;
@@ -19,7 +20,7 @@ import java.net.URI;
 public class DynamoDbConfig {
 
     @Bean
-    public DynamoDbClient dynamoDbClient(DynamoDbProperties properties) {
+    public DynamoDbClient dynamoDbClient(DynamoDbProperties properties, AwsCredentialsProvider awsCredentialsProvider) {
         var clientBuilder = DynamoDbClient.builder();
 
         String testOverride = properties.getEndpointOverride();
@@ -29,23 +30,21 @@ public class DynamoDbConfig {
 
         return clientBuilder
                 .region(Region.of(properties.getRegion()))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(properties.getAccessKey(),
-                                properties.getSecretKey())
-                ))
+                .credentialsProvider(awsCredentialsProvider)
                 .build();
     }
 
     @Bean
-    public DynamoDbEnhancedClient getDynamoDbEnhancedClient(DynamoDbProperties properties) {
+    public DynamoDbEnhancedClient getDynamoDbEnhancedClient(DynamoDbProperties properties,
+                                                            AwsCredentialsProvider awsCredentialsProvider) {
         return DynamoDbEnhancedClient.builder()
-                .dynamoDbClient(dynamoDbClient(properties))
+                .dynamoDbClient(dynamoDbClient(properties, awsCredentialsProvider))
                 .build();
     }
 
     @Bean
-    public DynamoDbTemplate dynamoDbTemplate(DynamoDbProperties properties) {
-        return new DynamoDbTemplate(getDynamoDbEnhancedClient(properties));
+    public DynamoDbTemplate dynamoDbTemplate(DynamoDbProperties properties, AwsCredentialsProvider awsCredentialsProvider) {
+        return new DynamoDbTemplate(getDynamoDbEnhancedClient(properties, awsCredentialsProvider));
     }
 
 }

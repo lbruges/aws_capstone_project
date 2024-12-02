@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbIndex;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
@@ -21,7 +22,6 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.immune.capstone.persistence.utils.DynamoDbConstants.DYNAMO_DATE_SEC_INDEX;
 
@@ -29,16 +29,15 @@ import static com.immune.capstone.persistence.utils.DynamoDbConstants.DYNAMO_DAT
 @Component
 @RequiredArgsConstructor
 public class UtilityDAOImpl implements UtilityDAO {
-
-    private final DynamoDbTemplate dbTemplate;
     private final DynamoDbEnhancedClient enhancedClient;
     private final DynamoDbProperties properties;
     private final UtilityMapper mapper;
 
     @Override
-    public Utility save(Utility utility) {
-        UtilityEntity entity = dbTemplate.save(mapper.toEntity(utility));
-        return mapper.toModel(entity);
+    public void save(Utility utility) {
+        DynamoDbTable<UtilityEntity> utilTable = enhancedClient.table(properties.getTableName(),
+                TableSchema.fromBean(UtilityEntity.class));
+        utilTable.putItem(mapper.toEntity(utility));
     }
 
     @Override
@@ -62,17 +61,22 @@ public class UtilityDAOImpl implements UtilityDAO {
                         .build()
         );
 
-        AtomicInteger atomicInteger = new AtomicInteger();
-        atomicInteger.set(0);
-        results.forEach(page -> {
-            UtilityEntity entity = page.items().get(atomicInteger.get());
-            String zoneId = entity.getZone();
-            log.info("Fetching utilities for zone id {} and month {}", zoneId, targetDate);
+        for (var page : results) {
+            if (page.items() == null || page.items().size() == 0) {
+                log.warn("No results found for target date {}", targetDate);
+                continue;
+            }
 
-            utilsByZone.put(zoneId, mapper.toModel(entity));
-            atomicInteger.incrementAndGet();
-        });
+            page.items().forEach(entity -> addUtilToMap(entity, utilsByZone, targetDate));
+        }
 
         return utilsByZone;
+    }
+
+    private void addUtilToMap(UtilityEntity entity, Map<String, Utility> utilsByZone, String targetDate) {
+        String zoneId = entity.getZone();
+        log.info("Fetching utilities for zone id {} and month {}", zoneId, targetDate);
+
+        utilsByZone.put(zoneId, mapper.toModel(entity));
     }
 }

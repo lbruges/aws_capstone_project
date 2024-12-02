@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface UtilityDAO {
 
-    Utility save(Utility utility);
+    void save(Utility utility);
     Map<String, Utility> getUtilsByZonePerDate(String targetDate);
 
 }

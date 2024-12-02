@@ -16,8 +16,8 @@ public class Utility {
     private String id; // composite - zone_date
     private String zone;
     private String date;
-    private double pricePerM3;
-    private double utility;
+    private float pricePerM3;
+    private float utility;
 
     public Map<String, String> toMap() {
         return Map.of("Zone", zone, "Date", date, "Price per M3", String.valueOf(pricePerM3), "Utility",
