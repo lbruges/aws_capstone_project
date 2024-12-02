@@ -91,4 +91,6 @@ awslocal --endpoint-url=http://localhost:4566 sqs send-message  --queue-url http
 
 Docker
 docker build -t capstone .
+docker run capstone_app -p 8081:8080 .
+
 
