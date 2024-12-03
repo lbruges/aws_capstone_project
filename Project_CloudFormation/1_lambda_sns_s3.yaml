@@ -4,7 +4,7 @@ Parameters:
     Default: arn:aws:iam::971134353672:role/LabRole
   SnsEmail:
     Type: String
-    Default: laura.bruges.cco@immune.institute
+    Default: "laura.bruges.cco@immune.institute"
 
 # Creación de recursos
 Resources:
@@ -72,11 +72,11 @@ Resources:
 
   APIGWPermission:
     Type: AWS::Lambda::Permission
-  Properties:
-    FunctionName: !GetAtt FunctionLambdaForPublish2.Arn
-    Action: lambda:InvokeFunction
-    Principal: apigateway.amazonaws.com
-    SourceAccount: !Ref 'AWS::AccountId' 
+    Properties:
+      FunctionName: !GetAtt FunctionLambdaForPublish2.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId' 
   
 Outputs:
   MiTemaSNSArn:
