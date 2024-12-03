@@ -1,0 +1,21 @@
+Type: AWS::CloudWatch::Alarm
+Properties:
+    AlarmName: AlarmaCostos
+    ActionsEnabled: true
+    OKActions: []
+    AlarmActions:
+        - arn:aws:sns:us-east-1:307946672939:Default_CloudWatch_Alarms_Topic
+        - arn:aws:lambda:us-east-1:307946672939:function:MyLambdaFunction
+    InsufficientDataActions: []
+    MetricName: EstimatedCharges
+    Namespace: AWS/Billing
+    Statistic: Maximum
+    Dimensions:
+        - Name: Currency
+          Value: USD
+    Period: 21600
+    EvaluationPeriods: 1
+    DatapointsToAlarm: 1
+    Threshold: 10
+    ComparisonOperator: GreaterThanThreshold
+    TreatMissingData: missing
