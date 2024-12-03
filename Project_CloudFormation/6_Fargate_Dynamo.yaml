@@ -1,0 +1,133 @@
+Parameters:
+  SubnetID:
+    Type: String
+    Default: subnet-04b527e5b0f394118
+  UtilImage:
+    Type: String
+    Default: registry.hub.docker.com/lbrug95/capstone_project
+  ExecRole:
+    Type: String
+    Default: arn:aws:iam::971134353672:role/LabRole
+  ContainerPort:
+    Type: Number
+    Default: 8080
+  HttpPort:
+    Type: Number
+    Default: 80
+  SqsQueueName:
+    Type: String
+    Default: SQSQueue
+  UtilsTableName:
+    Type: String
+    Default: gas_utilities
+
+Resources:
+  # Dynamo
+  UtilsDynamoDB:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref UtilsTableName
+      AttributeDefinition:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: date
+          AttributeType: S
+        - AttributeName: zone
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: date
+          KeyType: RANGE
+      ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+      GlobalSecondaryIndexes:
+        - IndexName: DateZoneIndex
+          KeySchema:
+            - AttributeName: zone
+              KeyType: HASH
+            - AttributeName: date
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+        - IndexName: DateIndex
+          KeySchema:
+            - AttributeName: date
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+  # Fargate
+  UtilitiesFargateCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: utilities-cluster-2
+  UtilitiesLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: utilities-ecs-lg-2
+  UtilitiesSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: utilities-ecs-sg-2
+      GroupDescription: Security group for Utilities App
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref HttpPort
+          ToPort: !Ref HttpPort
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: !Ref ContainerPort
+          ToPort: !Ref ContainerPort
+          CidrIp: 0.0.0.0/0
+  UtilTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: utilities-ecs-td
+      Cpu: 1024
+      Memory: 2048
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !Ref ExecRole
+      ContainerDefinitions:
+        - Name: utilities-svc
+          Image: !Ref UtilImage
+          Environment:
+            - Name: S3_BUCKET
+              Value: !ImportValue MyS3BucketName
+            - Name: AWS_QUEUE_NAME
+              Value: !Ref SqsQueueName
+            - Name: AWS_DYNAMODB_TABLE_NAME
+              Value: !Ref UtilsTableName
+            - Name: CONSUMPTION_SVC_HOST
+              Value: !ImportValue ApiGwUrl
+            - Name: PRODUCTION_SVC_HOST
+              Value: !ImportValue ApiGwUrl
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref UtilitiesLogGroup
+              awslogs-stream-prefix: utils-ecs
+      RequiresCapabilities:
+        - Fargate
+  UtilsSvc:
+    Type: AWS::ECS::Service
+    Properties: !Ref UtilitiesFargateCluster
+    TaskDefinition: !Ref UtilTaskDefinition
+    DesiredCount: 1
+    LaunchType: FARGATE
+    NetworkConfiguration:
+      AwsvpcConfiguration:
+        Subnets:
+          - !Ref SubnetID
+        SecurityGroups:
+          - !GetAtt UtilitiesSecurityGroup.GroupId

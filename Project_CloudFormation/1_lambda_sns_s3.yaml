@@ -1,0 +1,92 @@
+Parameters:
+  ExecRole:
+    Type: String
+    Default: arn:aws:iam::971134353672:role/LabRole
+  SnsEmail:
+    Type: String
+    Default: laura.bruges.cco@immune.institute
+
+# Creación de recursos
+Resources:
+# Lambda para descargar reportes
+  FunctionForDownload2:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: Lambda_DownloadReports2
+      Handler: DownloadFile.lambda_handler
+      Role: !Ref ExecRole
+      Code: 
+        S3Bucket: codigoscapstone-jhon
+        S3Key: DownloadFile.zip
+      Runtime: python3.12
+      Timeout: 60
+      Environment:
+        Variables:
+          bucket: !Ref S3Bucket
+
+# Lambda para publicar reportes
+  FunctionLambdaForPublish2:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: Lambda_publishReports2
+      Handler: Publishtosns.lambda_handler
+      Role: !Ref ExecRole
+      Code: 
+        S3Bucket: codigoscapstone-jhon
+        S3Key: Publishtosns.zip
+      Runtime: python3.12
+      Timeout: 60
+      Environment:
+        Variables:
+          snsarn: !Ref MiTemaSNS2
+
+# Creación del tema SNS
+  MiTemaSNS2:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: ReportedeCorreo2  # Nombre del tema SNS
+      DisplayName: "Subida de reporte a bucket" # Nombre visible al enviar notificaciones por email
+      Subscription:
+        - Protocol: email
+          Endpoint: !Ref SnsEmail
+
+# Se crea el s3 bucket con evento de notificaciones haciendo referencia a la lambda que publicara en sns
+          
+  S3Bucket:    
+    Type: AWS::S3::Bucket
+    DependsOn: "S3Permission"
+    Properties:
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Function: !GetAtt FunctionLambdaForPublish2.Arn
+            Event: "s3:ObjectCreated:Put"
+      
+#al ser IaC se requiere que s3 tenga permisos para invocar la lambda, en consola no se requiere poner explicitamente los permisos porque los adjunta automaticamente
+  S3Permission:    
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt FunctionLambdaForPublish2.Arn
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId' 
+
+  APIGWPermission:
+    Type: AWS::Lambda::Permission
+  Properties:
+    FunctionName: !GetAtt FunctionLambdaForPublish2.Arn
+    Action: lambda:InvokeFunction
+    Principal: apigateway.amazonaws.com
+    SourceAccount: !Ref 'AWS::AccountId' 
+  
+Outputs:
+  MiTemaSNSArn:
+    Description: "ARN del tema SNS creado"
+    Value: !Ref MiTemaSNS2
+  
+  FunctionLambdaForPublishArn:
+    Description: "ARN de la función Lambda"
+    Value: !GetAtt FunctionLambdaForPublish2.Arn
+
+  MyS3BucketName:
+    Description: "S3 Name"
+    Value: !Ref S3Bucket
