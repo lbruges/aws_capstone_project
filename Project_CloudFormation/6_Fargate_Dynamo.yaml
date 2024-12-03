@@ -27,7 +27,7 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Ref UtilsTableName
-      AttributeDefinition:
+      AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
         - AttributeName: date
@@ -117,8 +117,6 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-group: !Ref UtilitiesLogGroup
               awslogs-stream-prefix: utils-ecs
-      RequiresCapabilities:
-        - Fargate
   UtilsSvc:
     Type: AWS::ECS::Service
     Properties: 
