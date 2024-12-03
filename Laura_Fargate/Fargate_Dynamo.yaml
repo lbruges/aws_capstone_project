@@ -1,7 +1,7 @@
 Parameters:
   SubnetID:
     Type: String
-    Default: TBD #TODO
+    Default: subnet-04b527e5b0f394118
   UtilImage:
     Type: String
     Default: registry.hub.docker.com/lbrug95/capstone_project
@@ -94,13 +94,13 @@ Resources:
       Cpu: 1024
       Memory: 2048
       NetworkMode: awsvpc
-      ExecutionRoleArn: 
+      ExecutionRoleArn: !Ref ExecRole
       ContainerDefinitions:
         - Name: utilities-svc
           Image: !Ref UtilImage
           Environment:
             - Name: S3_BUCKET
-              Value: !Ref S3Bucket # Able to reference another stack?
+              Value: !ImportValue MyS3BucketName
             - Name: AWS_QUEUE_NAME
               Value: !Ref SqsQueueName
             - Name: AWS_DYNAMODB_TABLE_NAME

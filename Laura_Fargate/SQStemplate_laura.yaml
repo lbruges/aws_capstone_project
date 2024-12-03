@@ -1,3 +1,8 @@
+Parameters:
+  ExecRole:
+    Type: String
+    Default: arn:aws:iam::971134353672:role/LabRole
+
 Resources:
   MySQSQueue:
     Type: AWS::SQS::Queue
@@ -29,7 +34,7 @@ Resources:
     Properties:
       FunctionName: Lambda_Sender
       Handler: SendEvenToSQS.lambda_handler
-      Role: arn:aws:iam::971134353672:role/LabRole
+      Role: !Ref ExecRole
       Code: 
         S3Bucket: codigoscapstone-jhon
         S3Key: SendEventToSQS.zip

@@ -1,3 +1,11 @@
+Parameters:
+  ExecRole:
+    Type: String
+    Default: arn:aws:iam::971134353672:role/LabRole
+  SnsEmail:
+    Type: String
+    Default: laura.bruges.cco@immune.institute
+
 # Creación de recursos
 Resources:
 # Lambda para descargar reportes
@@ -6,7 +14,7 @@ Resources:
     Properties:
       FunctionName: Lambda_DownloadReports2
       Handler: DownloadFile.lambda_handler
-      Role: arn:aws:iam::971134353672:role/LabRole
+      Role: !Ref ExecRole
       Code: 
         S3Bucket: codigoscapstone-jhon
         S3Key: DownloadFile.zip
@@ -22,7 +30,7 @@ Resources:
     Properties:
       FunctionName: Lambda_publishReports2
       Handler: Publishtosns.lambda_handler
-      Role: arn:aws:iam::971134353672:role/LabRole
+      Role: !Ref ExecRole
       Code: 
         S3Bucket: codigoscapstone-jhon
         S3Key: Publishtosns.zip
@@ -40,7 +48,7 @@ Resources:
       DisplayName: "Subida de reporte a bucket" # Nombre visible al enviar notificaciones por email
       Subscription:
         - Protocol: email
-          Endpoint: laura.bruges.cco@immune.institute
+          Endpoint: !Ref SnsEmail
 
 # Se crea el s3 bucket con evento de notificaciones haciendo referencia a la lambda que publicara en sns
           
@@ -70,3 +78,7 @@ Outputs:
   FunctionLamdbdaForPublishArn:
     Description: "ARN de la función Lambda"
     Value: !GetAtt FunctionLambdaForPublish2.Arn
+
+  MyS3BucketName:
+    Description: "S3 Name"
+    Value: !Ref S3Bucket
