@@ -39,12 +39,6 @@ Resources:
       - "integrations/${publishIntegrationId}"
       - publishIntegrationId: !GetAtt PublishLambdaIntegration.IntegrationId
       AuthorizationType: NONE
-  PublishLambdaApiRouteResponse:
-    Type: AWS::ApiGatewayV2::RouteResponse
-    Properties:
-      ApiId: !Ref UtilitiesApi
-      RouteId: !Ref PublishLambdaApiRoute
-      RouteResponseKey: 200
   UtilitiesApiStage:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
