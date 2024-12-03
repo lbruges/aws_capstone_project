@@ -1,0 +1,26 @@
+Parameters:
+  SubnetID:
+    Type: String
+Resources:
+  UtilitiesFargate:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: utilities-cluster-2
+  UtilitiesLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: utilities-ecs-lg-2
+  UtilitiesSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: utilities-ecs-sg-2
+      GroupDescription: Security group for Utilities App
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0

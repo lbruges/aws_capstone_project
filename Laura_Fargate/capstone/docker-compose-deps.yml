@@ -5,6 +5,9 @@ services:
     ports:
       # Map the port so you can access the API from the host machine
       - 4566:4566
+    hostname: custom-localstack
+    networks:
+      - default
     #volumes:
       # Here you mount your setup file so it will be executed
       # when the container starts

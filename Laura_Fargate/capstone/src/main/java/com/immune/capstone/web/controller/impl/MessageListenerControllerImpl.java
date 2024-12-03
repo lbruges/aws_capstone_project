@@ -25,7 +25,7 @@ public class MessageListenerControllerImpl implements MessageListenerController 
     private final UtilityDAO utilityDAO;
 
     @Override
-    @SqsListener("${aws.sqs.queue-name:utilities_queue}")
+    @SqsListener("${aws.sqs.queue-name:SQSQueue}")
     public void onMessage(ReportMessage message) {
         Map<String, Utility> utilitiesByZone = new HashMap<>(utilityDAO.getUtilsByZonePerDate(message.getDate()));
         utilitiesByZone.remove(message.getZone()); // force refresh
