@@ -82,11 +82,17 @@ Outputs:
   MiTemaSNSArn:
     Description: "ARN del tema SNS creado"
     Value: !Ref MiTemaSNS2
+    Export:
+      Name: MiTemaSNSArn
   
   FunctionLambdaForPublishArn:
     Description: "ARN de la función Lambda"
     Value: !GetAtt FunctionLambdaForPublish2.Arn
+    Export:
+      Name: FunctionLambdaForPublishArn
 
   MyS3BucketName:
     Description: "S3 Name"
     Value: !Ref S3Bucket
+    Export:
+      Name: MyS3BucketName

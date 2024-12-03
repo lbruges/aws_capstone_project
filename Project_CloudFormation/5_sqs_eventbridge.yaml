@@ -75,11 +75,17 @@ Outputs:
   SQSQueueURL:
     Description: "URL de la cola SQS"
     Value: !Ref MySQSQueue
+    Export:
+      Name: SQSQueueURL
 
   SQSQueueArn:
     Description: "ARN de la cola SQS"
     Value: !GetAtt MySQSQueue.Arn
+    Export:
+      Name: SQSQueueArn
   
   SQSQueueUrl:
     Description: "Url de la cola SQS"
     Value: !GetAtt MySQSQueue.QueueUrl
+    Export:
+      Name: SQSQueueUrl

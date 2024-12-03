@@ -9,6 +9,17 @@ Resources:
     Properties:
       Name: MyUtilitiesApi
       ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins:
+          - '*'
+        AllowMethods:
+          - GET
+          - PUT
+          - POST
+        AllowHeaders:
+          - Authorization
+          - Content-Type
+          - X-Requested-With
   PublishLambdaIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -16,13 +27,17 @@ Resources:
       Description: Publish Lambda API GW Integration
       IntegrationType: AWS_PROXY
       PayloadFormatVersion: "2.0"
-      IntegrationUri: !ImportValue FunctionLambdaForPublishArn
+      IntegrationUri: !Sub
+      - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${publishArn}/invocations"
+      - publishArn: !ImportValue FunctionLambdaForPublishArn
   PublishLambdaApiRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref UtilitiesApi
       RouteKey: "PUT /api/report"
-      Target: !Ref PublishLambdaIntegration
+      Target: !Sub 
+      - "integrations/${publishIntegrationId}"
+      - publishIntegrationId: !GetAtt PublishLambdaIntegration.IntegrationId
       AuthorizationType: NONE
   PublishLambdaApiRouteResponse:
     Type: AWS::ApiGatewayV2::RouteResponse
@@ -36,18 +51,9 @@ Resources:
       ApiId: !Ref UtilitiesApi
       StageName: !Ref PublishStageName
       AutoDeploy: true
-      CorsConfiguration:
-        AllowOrigins:
-          - '*'
-        AllowMethods:
-          - GET
-          - PUT
-          - POST
-        AllowedHeaders:
-          - Authorization
-          - Content-Type
-          - X-Requested-With
 Outputs:
   ApiGwUrl:
     Description: "Publish Report API endpoint URL"
     Value: !Sub "https://${UtilitiesApi}.execute-api.${AWS::Region}.amazonaws.com/${PublishStageName}"
+    Export:
+      Name: ApiGwUrl

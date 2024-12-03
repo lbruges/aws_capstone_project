@@ -122,4 +122,5 @@ S3_BUCKET: s3stack2-s3bucket-zjjae0rgx1ae
 AWS_QUEUE_NAME: SQSQueue
 AWS_DYNAMODB_TABLE_NAME: gas_utilities
 
+aws cloudformation list-exports
 
