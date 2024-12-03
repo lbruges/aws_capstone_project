@@ -1,0 +1,1 @@
+El archivo "userpool.yaml" contiene la información para la creación de AWS Cognnito ya probado desde AWS y desde Postman y funcionando tanto con el usuario creado en el ".yaml" como creando un nuevo usuario.

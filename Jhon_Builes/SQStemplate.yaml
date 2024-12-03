@@ -28,7 +28,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: Lambda_Sender
-      Handler: SendEvenToSQS.lambda_handler
+      Handler: SendEventToSQS.lambda_handler
       Role: arn:aws:iam::592424607980:role/LabRole
       Code: 
         S3Bucket: codigoscapstonejalb
@@ -38,6 +38,34 @@ Resources:
       Environment:
         Variables:
           SQS_QUEUE_URL: !GetAtt MySQSQueue.QueueUrl
+  
+  MyEventBridgeRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: execution_lambda_sqs
+      ScheduleExpression: rate(2 minutes)  
+      State: ENABLED
+      Targets:
+        - Id: LambdaForSendEventToSQS
+          Arn: !GetAtt LambdaForSendEventToSQS.Arn
+          Input: |
+            {
+              "SQSEvent":[
+               {
+              "zone":"",
+              "date":""
+              }
+              ]
+              
+            }
+
+  LambdaInvokePermissionEventBridge:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt LambdaForSendEventToSQS.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt MyEventBridgeRule.Arn
 
 Outputs:
   SQSQueueURL:
