@@ -121,13 +121,14 @@ Resources:
         - Fargate
   UtilsSvc:
     Type: AWS::ECS::Service
-    Properties: !Ref UtilitiesFargateCluster
-    TaskDefinition: !Ref UtilTaskDefinition
-    DesiredCount: 1
-    LaunchType: FARGATE
-    NetworkConfiguration:
-      AwsvpcConfiguration:
-        Subnets:
-          - !Ref SubnetID
-        SecurityGroups:
-          - !GetAtt UtilitiesSecurityGroup.GroupId
+    Properties: 
+      Cluster: !Ref UtilitiesFargateCluster
+      TaskDefinition: !Ref UtilTaskDefinition
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets:
+            - !Ref SubnetID
+          SecurityGroups:
+            - !GetAtt UtilitiesSecurityGroup.GroupId
