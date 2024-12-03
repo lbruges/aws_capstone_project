@@ -130,3 +130,4 @@ Resources:
             - !Ref SubnetID
           SecurityGroups:
             - !GetAtt UtilitiesSecurityGroup.GroupId
+          AssignPublicIp: ENABLED
