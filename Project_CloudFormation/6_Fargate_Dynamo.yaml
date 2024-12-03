@@ -8,7 +8,7 @@ Parameters:
   ExecRole:
     Type: String
     Default: arn:aws:iam::971134353672:role/LabRole
-  ContainerPort:
+  AppPort:
     Type: Number
     Default: 8080
   HttpPort:
@@ -84,8 +84,8 @@ Resources:
           ToPort: !Ref HttpPort
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
-          FromPort: !Ref ContainerPort
-          ToPort: !Ref ContainerPort
+          FromPort: !Ref AppPort
+          ToPort: !Ref AppPort
           CidrIp: 0.0.0.0/0
   UtilTaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -95,6 +95,7 @@ Resources:
       Memory: 2048
       NetworkMode: awsvpc
       ExecutionRoleArn: !Ref ExecRole
+      TaskRoleArn: !Ref ExecRole
       ContainerDefinitions:
         - Name: utilities-svc
           Image: !Ref UtilImage
@@ -110,7 +111,8 @@ Resources:
             - Name: PRODUCTION_SVC_HOST
               Value: !ImportValue ApiGwUrl
           PortMappings:
-            - ContainerPort: !Ref ContainerPort
+            - ContainerPort: !Ref AppPort
+            - ContainerPort: !Ref HttpPort
           LogConfiguration:
             LogDriver: awslogs
             Options:
