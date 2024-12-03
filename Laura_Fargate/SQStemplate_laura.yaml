@@ -1,0 +1,85 @@
+Parameters:
+  ExecRole:
+    Type: String
+    Default: arn:aws:iam::971134353672:role/LabRole
+
+Resources:
+  MySQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: "SQSQueue"  # Nombre de la cola
+      VisibilityTimeout: 30    # Tiempo de visibilidad (en segundos)
+      MessageRetentionPeriod: 120 # Retención de mensajes (1 día en segundos)
+      DelaySeconds: 5          # Retraso en la entrega de mensajes
+      ReceiveMessageWaitTimeSeconds: 5 # Tiempo de espera para mensajes
+
+  MySQSPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !GetAtt MySQSQueue.QueueUrl
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AllowSQSPublish"
+            Effect: "Allow"
+            Principal:
+              Service: "lambda.amazonaws.com"
+            Action: 
+              - "SQS:SendMessage"
+            Resource: !GetAtt MySQSQueue.Arn
+    
+  LambdaForSendEventToSQS:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: Lambda_Sender
+      Handler: SendEvenToSQS.lambda_handler
+      Role: !Ref ExecRole
+      Code: 
+        S3Bucket: codigoscapstone-jhon
+        S3Key: SendEventToSQS.zip
+      Runtime: python3.12
+      Timeout: 60
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: !GetAtt MySQSQueue.QueueUrl
+  MyEventBridgeRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: execution_lambda_sqs
+      ScheduleExpression: rate(2 minutes)  
+      State: ENABLED
+      Targets:
+        - Id: LambdaForSendEventToSQS
+          Arn: !GetAtt LambdaForSendEventToSQS.Arn
+          Input: |
+            {
+              "SQSEvent":[
+               {
+              "zone":"",
+              "date":""
+              }
+              ]
+              
+            }
+
+  LambdaInvokePermissionEventBridge:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt LambdaForSendEventToSQS.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt MyEventBridgeRule.Arn
+
+Outputs:
+  SQSQueueURL:
+    Description: "URL de la cola SQS"
+    Value: !Ref MySQSQueue
+
+  SQSQueueArn:
+    Description: "ARN de la cola SQS"
+    Value: !GetAtt MySQSQueue.Arn
+  
+  SQSQueueUrl:
+    Description: "Url de la cola SQS"
+    Value: !GetAtt MySQSQueue.QueueUrl

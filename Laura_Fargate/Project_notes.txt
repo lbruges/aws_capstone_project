@@ -28,26 +28,37 @@ aws dynamodb create-table \
     --attribute-definitions \
         AttributeName=id,AttributeType=S \
         AttributeName=date,AttributeType=S \
+        AttributeName=zone,AttributeType=S \
     --key-schema \
         AttributeName=id,KeyType=HASH \
         AttributeName=date,KeyType=RANGE \
     --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
     --global-secondary-indexes \
-        "[{\"IndexName\": \"DateZoneIndex\",
+        "[{
+            \"IndexName\": \"DateZoneIndex\",
             \"KeySchema\": [
                 {\"AttributeName\": \"zone\", \"KeyType\": \"HASH\"},
                 {\"AttributeName\": \"date\", \"KeyType\": \"RANGE\"}
             ],
             \"Projection\": {
                 \"ProjectionType\": \"ALL\"
+            },
+            \"ProvisionedThroughput\": {
+                \"ReadCapacityUnits\": 5,
+                \"WriteCapacityUnits\": 5
             }
         },
-        {\"IndexName\": \"DateIndex\",
+        {
+            \"IndexName\": \"DateIndex\",
             \"KeySchema\": [
                 {\"AttributeName\": \"date\", \"KeyType\": \"HASH\"}
             ],
             \"Projection\": {
                 \"ProjectionType\": \"ALL\"
+            },
+            \"ProvisionedThroughput\": {
+                \"ReadCapacityUnits\": 5,
+                \"WriteCapacityUnits\": 5
             }
         }]"
 
@@ -88,3 +99,28 @@ http://localhost:4566/capstone-gas-utils-reports-202412/D_11-2024.pdf
 awslocal s3 ls s3://capstone-gas-utils-reports-202412
 
 awslocal --endpoint-url=http://localhost:4566 sqs send-message  --queue-url http://localhost:4566/000000000000/utilities_queue --region us-east-1  --message-body "{\"zone\": \"A\", \"date\": \"01-2025\"}"
+
+Docker
+docker build -t capstone_project:latest .
+docker run -p 8081:8080 .
+
+docker run --network app-network -p 8080:8080 capstone_project:latest -e AWS_REGION=us-east-1
+
+
+denied: User: is not authorized to perform: ecr:InitiateLayerUpload on resource: arn:aws:ecr:us-east-1:971134353672:repository/immune-capstone/capstone-project because no resource-based policy allows the ecr:InitiateLayerUpload action
+
+docker build -t lbrug95/capstone_project .
+docker push lbrug95/capstone_project
+docker pull registry.hub.docker.com/lbrug95/capstone_project
+
+
+aws sqs send-message  --queue-url https://sqs.us-east-1.amazonaws.com/971134353672/SQSQueue --region us-east-1  --message-body "{\"zone\": \"A\", \"date\": \"11-2025\"}"
+
+
+S3 bucket: 
+S3_BUCKET: s3stack2-s3bucket-zjjae0rgx1ae
+AWS_QUEUE_NAME: SQSQueue
+AWS_DYNAMODB_TABLE_NAME: gas_utilities
+
+aws cloudformation list-exports
+
