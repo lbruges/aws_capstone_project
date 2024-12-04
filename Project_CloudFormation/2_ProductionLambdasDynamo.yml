@@ -12,7 +12,7 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties: 
       TableName: !Ref ProdTableName
-      AttributeDefinition:
+      AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
         - AttributeName: date
