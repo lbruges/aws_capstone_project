@@ -15,12 +15,13 @@ def lambda_handler(event, context):
 
 		req_body = json.loads(event['body'])
 		
-		if 'date' not in req_body or 'costPerM3' not in req_body:
+		if 'date' not in req_body or 'zone' not in req_body or 'costPerM3' not in req_body:
 			return {
 				'statusCode': 400,
 				'body': json.dumps({'message': 'Date or cost per m3 not provided.'})
 			}
 		
+		req_body["id"] = req_body["zone"] + "_" + req_body["date"]
 		prod_table.put_item(Item=req_body)
 
 		return {
