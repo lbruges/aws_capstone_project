@@ -31,7 +31,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: Lambda_ProductionFetcher
-      Handler: DownloadFile.lambda_handler
+      Handler: production_fetcher.lambda_handler
       Role: !Ref ExecRole
       Code:
         S3Bucket: codigoscapstone-jhon
@@ -42,7 +42,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: Lambda_ProductionUpdater
-      Handler: DownloadFile.lambda_handler
+      Handler: production_updater.lambda_handler
       Role: !Ref ExecRole
       Code:
         S3Bucket: codigoscapstone-jhon
