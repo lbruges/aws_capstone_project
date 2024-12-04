@@ -30,6 +30,26 @@ Resources:
       IntegrationUri: !Sub
       - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${publishArn}/invocations"
       - publishArn: !ImportValue FunctionLambdaForPublishArn
+  ProductionUpdaterIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UtilitiesApi
+      Description: Production Updater Lambda API GW Integration
+      IntegrationType: AWS_PROXY
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !Sub
+      - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${prodUpdaterArn}/invocations"
+      - prodUpdaterArn: !ImportValue ProductionUpdaterArn
+  ProductionFetcherIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UtilitiesApi
+      Description: Production Fetcher Lambda API GW Integration
+      IntegrationType: AWS_PROXY
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !Sub
+      - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${prodFetcherArn}/invocations"
+      - prodFetcherArn: !ImportValue ProductionFetcherArn
   PublishLambdaApiRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -38,6 +58,24 @@ Resources:
       Target: !Sub 
       - "integrations/${publishIntegrationId}"
       - publishIntegrationId: !GetAtt PublishLambdaIntegration.IntegrationId
+      AuthorizationType: NONE
+  ProductionUpdaterLambdaApiRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UtilitiesApi
+      RouteKey: "POST /api/production"
+      Target: !Sub 
+      - "integrations/${prodUpdaterIntegrationId}"
+      - prodUpdaterIntegrationId: !GetAtt ProductionUpdaterIntegration.IntegrationId
+      AuthorizationType: NONE
+  ProductionFetcherLambdaApiRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UtilitiesApi
+      RouteKey: "GET /api/production/{zone}/{date}"
+      Target: !Sub 
+      - "integrations/${prodFetcherIntegrationId}"
+      - prodFetcherIntegrationId: !GetAtt ProductionFetcherIntegration.IntegrationId
       AuthorizationType: NONE
   UtilitiesApiStage:
     Type: AWS::ApiGatewayV2::Stage

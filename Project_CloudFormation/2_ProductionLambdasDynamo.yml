@@ -2,9 +2,33 @@ Parameters:
   ExecRole:
     Type: String
     Default: arn:aws:iam::971134353672:role/LabRole
+  ProdTableName:
+    Type: String
+    Default: gas_production_cost
 
 Resources:
+  # Dynamo
+  ProductionDynamoDB:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: !Ref ProdTableName
+      AttributeDefinition:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: date
+          KeyType: RANGE
+      ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+  # Lambdas
   ProductionFetcherFunction:
+    Type: AWS::Lambda::Function
     Properties:
       FunctionName: Lambda_ProductionFetcher
       Handler: DownloadFile.lambda_handler
@@ -14,7 +38,8 @@ Resources:
         S3Key: production_fetcher.zip
       Runtime: python3.12
       Timeout: 60
-  ProductionUptaderFunction:
+  ProductionUpdaterFunction:
+    Type: AWS::Lambda::Function
     Properties:
       FunctionName: Lambda_ProductionUpdater
       Handler: DownloadFile.lambda_handler
@@ -35,7 +60,7 @@ Resources:
   UpdaterApiGWPermission:
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: !GetAtt ProductionUptaderFunction.Arn
+      FunctionName: !GetAtt ProductionUpdaterFunction.Arn
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceAccount: !Ref 'AWS::AccountId'
@@ -46,8 +71,8 @@ Outputs:
     Value: !GetAtt ProductionFetcherFunction.Arn
     Export:
       Name: ProductionFetcherArn
-  ProductionFetcherArn:
-    Description: "Production fetcher lambda ARN"
-    Value: !GetAtt ProductionFetcherFunction.Arn
+  ProductionUpdaterArn:
+    Description: "Production updater lambda ARN"
+    Value: !GetAtt ProductionUpdaterFunction.Arn
     Export:
-      Name: ProductionFetcherArn
+      Name: ProductionUpdaterArn
