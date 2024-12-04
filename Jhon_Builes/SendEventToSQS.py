@@ -39,7 +39,7 @@ def lambda_handler(event, context):
         data = event["SQSEvent"]
 
         if not data:
-            data = event.get("body")["SQSEvent"]
+            data = json.dumps(event.get("body")["SQSEvent"])
 
         for record in data:
             if record["zone"] == "":
