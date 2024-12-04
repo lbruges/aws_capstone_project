@@ -33,7 +33,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: Lambda_Sender
-      Handler: SendEvenToSQS.lambda_handler
+      Handler: SendEventToSQS.lambda_handler
       Role: !Ref ExecRole
       Code: 
         S3Bucket: codigoscapstone-jhon
