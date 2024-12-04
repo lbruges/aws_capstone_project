@@ -1,0 +1,53 @@
+Parameters:
+  ExecRole:
+    Type: String
+    Default: arn:aws:iam::971134353672:role/LabRole
+
+Resources:
+  ProductionFetcherFunction:
+    Properties:
+      FunctionName: Lambda_ProductionFetcher
+      Handler: DownloadFile.lambda_handler
+      Role: !Ref ExecRole
+      Code:
+        S3Bucket: codigoscapstone-jhon
+        S3Key: production_fetcher.zip
+      Runtime: python3.12
+      Timeout: 60
+  ProductionUptaderFunction:
+    Properties:
+      FunctionName: Lambda_ProductionUpdater
+      Handler: DownloadFile.lambda_handler
+      Role: !Ref ExecRole
+      Code:
+        S3Bucket: codigoscapstone-jhon
+        S3Key: production_updater.zip
+      Runtime: python3.12
+      Timeout: 60
+  
+  FetcherApiGWPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ProductionFetcherFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+  UpdaterApiGWPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ProductionUptaderFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+
+Outputs:
+  ProductionFetcherArn:
+    Description: "Production fetcher lambda ARN"
+    Value: !GetAtt ProductionFetcherFunction.Arn
+    Export:
+      Name: ProductionFetcherArn
+  ProductionFetcherArn:
+    Description: "Production fetcher lambda ARN"
+    Value: !GetAtt ProductionFetcherFunction.Arn
+    Export:
+      Name: ProductionFetcherArn
