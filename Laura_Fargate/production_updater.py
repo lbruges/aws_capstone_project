@@ -3,6 +3,7 @@ import boto3
 
 dynamodb = boto3.resource('dynamodb')
 table_name = 'gas_production_cost'
+prod_table = dynamodb.Table(table_name)
 
 def lambda_handler(event, context):
 	try:

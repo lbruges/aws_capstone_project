@@ -124,3 +124,12 @@ AWS_DYNAMODB_TABLE_NAME: gas_utilities
 
 aws cloudformation list-exports
 
+Para updater:
+{
+  "body": "{\"date\": \"12-2024\",\"costPerM3\": \"300\"}"
+}
+
+Para fetcher:
+{
+  "pathParameters": {"date": "12-2024"}
+}
