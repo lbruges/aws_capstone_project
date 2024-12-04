@@ -70,7 +70,7 @@ Resources:
       Principal: s3.amazonaws.com
       SourceAccount: !Ref 'AWS::AccountId' 
 
-  APIGWPermission:
+  APIGWPublishPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt FunctionLambdaForPublish2.Arn
@@ -78,7 +78,7 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceAccount: !Ref 'AWS::AccountId' 
 
-  APIGWPermission:
+  APIGWDownloadPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt FunctionForDownload2.Arn
