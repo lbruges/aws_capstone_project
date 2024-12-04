@@ -37,6 +37,10 @@ def lambda_handler(event, context):
     try:
        
         data = event["SQSEvent"]
+
+        if not data:
+            data = event.get("body")["SQSEvent"]
+
         for record in data:
             if record["zone"] == "":
                 execution_event_bridge()

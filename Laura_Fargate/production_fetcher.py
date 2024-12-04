@@ -25,7 +25,8 @@ def lambda_handler(event, context):
 		if not target_date or not target_zone:
 			return {
 				'statusCode': 400,
-				'body': json.dumps({'message': 'Production fetcher - date not provided.'})
+				'body': json.dumps({'message': 'Production fetcher - date not provided.'}),
+				'headers': {"Content-Type": "application/json"}
 			}
 
 		id_to_query = target_zone + "_" + target_date
@@ -36,17 +37,20 @@ def lambda_handler(event, context):
 		if not date_production:
 			return {
 				'statusCode': 404,
-				'body': json.dumps({'message': f'Production info for date {target_date} was not found'})
+				'body': json.dumps({'message': f'Production info for date {target_date} was not found'}),
+				'headers': {"Content-Type": "application/json"}
 			}
 
 		date_production = decimal_to_float(date_production)
 
 		return {
 			'statusCode': 200,
-			'body': json.dumps(date_production)
+			'body': json.dumps(date_production),
+			'headers': {"Content-Type": "application/json"}
 		}
 	except Exception as e:
 		return {
 			'statusCode': 500,
-			'body': json.dumps({'message':f'Error obtaining production data from DynamoDB: {str(e)}'})
+			'body': json.dumps({'message':f'Error obtaining production data from DynamoDB: {str(e)}'}),
+			'headers': {"Content-Type": "application/json"}
 		}

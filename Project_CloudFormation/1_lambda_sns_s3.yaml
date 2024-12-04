@@ -77,6 +77,14 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceAccount: !Ref 'AWS::AccountId' 
+
+  APIGWPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt FunctionForDownload2.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
   
 Outputs:
   MiTemaSNSArn:
@@ -90,6 +98,12 @@ Outputs:
     Value: !GetAtt FunctionLambdaForPublish2.Arn
     Export:
       Name: FunctionLambdaForPublishArn
+
+  FunctionForDownloadArn:
+    Description: "ARN de la función Lambda para descarga"
+    Value: !GetAtt FunctionForDownload2.Arn
+    Export:
+      Name: FunctionForDownloadArn
 
   MyS3BucketName:
     Description: "S3 Name"

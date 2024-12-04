@@ -30,6 +30,16 @@ Resources:
       IntegrationUri: !Sub
       - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${publishArn}/invocations"
       - publishArn: !ImportValue FunctionLambdaForPublishArn
+  DownloadReportIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UtilitiesApi
+      Description: Download reports lambda API GW Integration
+      IntegrationType: AWS_PROXY
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !Sub
+      - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${downloadArn}/invocations"
+      - downloadArn: !ImportValue FunctionForDownloadArn
   ProductionUpdaterIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -58,6 +68,15 @@ Resources:
       Target: !Sub 
       - "integrations/${publishIntegrationId}"
       - publishIntegrationId: !GetAtt PublishLambdaIntegration.IntegrationId
+      AuthorizationType: NONE
+  DownloadLambdaApiRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UtilitiesApi
+      RouteKey: "GET /api/report"
+      Target: !Sub 
+      - "integrations/${downloadIntegrationId}"
+      - downloadIntegrationId: !GetAtt DownloadReportIntegration.IntegrationId
       AuthorizationType: NONE
   ProductionUpdaterLambdaApiRoute:
     Type: AWS::ApiGatewayV2::Route

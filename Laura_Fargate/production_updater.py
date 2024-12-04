@@ -10,7 +10,8 @@ def lambda_handler(event, context):
 		if not event.get('body'):
 			return {
 				'statusCode': 400,
-				'body': json.dumps({'message': 'Empty body.'})
+				'body': json.dumps({'message': 'Empty body.'}),
+				'headers': {"Content-Type": "application/json"}
 			}
 
 		req_body = json.loads(event['body'])
@@ -18,7 +19,8 @@ def lambda_handler(event, context):
 		if 'date' not in req_body or 'zone' not in req_body or 'costPerM3' not in req_body:
 			return {
 				'statusCode': 400,
-				'body': json.dumps({'message': 'Date or cost per m3 not provided.'})
+				'body': json.dumps({'message': 'Date or cost per m3 not provided.'}),
+				'headers': {"Content-Type": "application/json"}
 			}
 		
 		req_body["id"] = req_body["zone"] + "_" + req_body["date"]
@@ -26,10 +28,12 @@ def lambda_handler(event, context):
 
 		return {
 			'statusCode': 200,
-			'body': json.dumps({'message': f'Successfully saved or updated production data for {req_body["date"]}'})
+			'body': json.dumps({'message': f'Successfully saved or updated production data for {req_body["date"]}'}),
+			'headers': {"Content-Type": "application/json"}
 		}
 	except Exception as e:
 		return {
 			'statusCode': 500,
-			'body': json.dumps({'message': f'Error inserting or updating item in DynamoDB: {str(e)}'})
+			'body': json.dumps({'message': f'Error inserting or updating item in DynamoDB: {str(e)}'}),
+			'headers': {"Content-Type": "application/json"}
 		}
