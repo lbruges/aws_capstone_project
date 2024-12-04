@@ -19,7 +19,7 @@ Parameters:
     Default: subnet-09dacb4c853e28f98
 
 Resources:
-  ConsumptionDB:
+  ConsumptionDBCluster:
     Type: AWS::RDS::DBCluster
     Properties:
       Engine: aurora-mysql
@@ -35,6 +35,14 @@ Resources:
       VpcSecurityGroupIds:
         - !GetAtt DBSecurityGroup.GroupId
       DBSubnetGroupName: !Ref DBSubnetGroup
+  DBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: gas-consumption-db-instance
+      DBClusterIdentifier: !Ref ConsumptionDBCluster
+      Engine: aurora-mysql
+      DBInstanceClass: db.serverless
+      PubliclyAccessible: true 
   DBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
