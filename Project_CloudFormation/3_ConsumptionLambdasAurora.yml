@@ -1,0 +1,53 @@
+Parameters:
+  ExecRole:
+    Type: String
+    Default: arn:aws:iam::971134353672:role/LabRole
+  DbUsername:
+    Type: String
+    Default: admin
+  DbPassword:
+    Type: String
+    Default: admin123
+  VpcID:
+    Type: String
+    Default: vpc-0445a9a645897279e
+  SubnetID1:
+    Type: String
+    Default: subnet-04b527e5b0f394118
+  SubnetID2:
+    Type: String
+    Default: subnet-09dacb4c853e28f98
+
+Resources:
+  ConsumptionDB:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      Engine: aurora-mysql
+      EngineMode: serverless
+      MasterUsername: !Ref DbUsername
+      MasterUserPassword: !Ref DbPassword
+      DBClusterIdentifier: gas-consumption-db
+      ScalingConfiguration:
+        AutoPause: true
+        MinCapacity: 2
+        MaxCapacity: 8
+        SecondsUntilAutoPause: 300
+      VpcSecurityGroupIds:
+        - !GetAtt DBSecurityGroup.GroupId
+      DBSubnetGroupName: !Ref DBSubnetGroup
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Consumption DB security group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '3306'
+          ToPort: '3306'
+          CidrIp: 0.0.0.0/0
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for Consumption DB cluster
+      SubnetIds:
+        - !Ref SubnetID1
+        - !Ref SubnetID2
