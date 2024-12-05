@@ -145,3 +145,5 @@ aws dynamodb create-table \
         AttributeName=id,KeyType=HASH \
         AttributeName=date,KeyType=RANGE \
     --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+
+pip install --platform manylinux2014_x86_64 --target=./package --implementation cp --python-version 3.12 --only-binary=:all: --upgrade mysql-connector-python
