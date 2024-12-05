@@ -37,3 +37,5 @@ Fargate/capstone/.mvn/
 Laura_Fargate/capstone/mvnw
 Laura_Fargate/capstone/mvnw.cmd
 Laura_Fargate/capstone/.mvn/wrapper/maven-wrapper.properties
+Laura_Fargate/consumer_lambda/mysql/connector/__pycache__/
+Laura_Fargate/consumer_lambda/
