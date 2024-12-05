@@ -73,7 +73,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref UtilitiesApi
-      RouteKey: "GET /api/report"
+      RouteKey: "GET /api/report{zone}/{date}"
       Target: !Sub 
       - "integrations/${downloadIntegrationId}"
       - downloadIntegrationId: !GetAtt DownloadReportIntegration.IntegrationId
