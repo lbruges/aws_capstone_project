@@ -21,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"date\": \"11-2024\",\r\n    \"zone\": \"C\",\r\n    \"costPerM3\": 12\r\n}"
+							"raw": "{\r\n    \"date\": \"12-2024\",\r\n    \"zone\": \"C\",\r\n    \"costPerM3\": 19\r\n}"
 						},
 						"url": {
 							"raw": "{{api_gw}}/api/production",
@@ -85,7 +85,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"date\": \"12-2024\",\r\n    \"zone\": \"C\",\r\n    \"costPerM3\": 13\r\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{api_gw}}/api/consumption/A/12-2024",
@@ -115,7 +115,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"SQSEvent\": [\r\n        {\r\n            \"zone\": \"B\",\r\n            \"date\": \"11-2024\"\r\n        }\r\n    ]\r\n}"
+							"raw": "{\r\n    \"SQSEvent\": [\r\n        {\r\n            \"zone\": \"B\",\r\n            \"date\": \"12-2024\"\r\n        }\r\n    ]\r\n}"
 						},
 						"url": {
 							"raw": "{{api_gw}}/api/report",
