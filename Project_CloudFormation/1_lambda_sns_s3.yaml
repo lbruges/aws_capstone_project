@@ -95,12 +95,6 @@ Outputs:
     Value: !Ref MiTemaSNS2
     Export:
       Name: MiTemaSNSArn
-  
-  FunctionLambdaForPublishArn:
-    Description: "ARN de la función Lambda"
-    Value: !GetAtt FunctionLambdaForPublish2.Arn
-    Export:
-      Name: FunctionLambdaForPublishArn
 
   FunctionForDownloadArn:
     Description: "ARN de la función Lambda para descarga"
