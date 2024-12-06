@@ -47,7 +47,7 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Name: execution_lambda_sqs
-      ScheduleExpression: rate(2 minutes)  
+      ScheduleExpression: rate(5 minutes)  
       State: ENABLED
       Targets:
         - Id: LambdaForSendEventToSQS
