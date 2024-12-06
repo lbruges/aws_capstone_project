@@ -91,6 +91,6 @@ Outputs:
       Name: SQSQueueUrl
   FunctionLambdaForPublishArn:
     Description: "ARN de la función Lambda para encolar mensajes"
-    Value: !GetAtt LambdaForSendEventToSQS.Arn
+    Value: !GetAtt Lambda_Sender.Arn
     Export:
       Name: FunctionLambdaForPublishArn
