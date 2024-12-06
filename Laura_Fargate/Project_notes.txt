@@ -134,6 +134,10 @@ Para fetcher:
   "pathParameters": {"date": "12-2024", "zone": "A"}
 }
 
+Para updater:
+{
+  "body": "{\"SQSEvent\": [{\"zone\": \"A\",\"date\": \"11-2024\"}]}"
+}
 
 
 aws dynamodb create-table \
