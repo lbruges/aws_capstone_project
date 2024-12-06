@@ -20,6 +20,8 @@ Resources:
           - Authorization
           - Content-Type
           - X-Requested-With
+  # ---- Integrations ----
+  # Report Lambdas
   PublishLambdaIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -40,6 +42,7 @@ Resources:
       IntegrationUri: !Sub
       - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${downloadArn}/invocations"
       - downloadArn: !ImportValue FunctionForDownloadArn
+  # Production lambdas
   ProductionUpdaterIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -60,6 +63,20 @@ Resources:
       IntegrationUri: !Sub
       - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${prodFetcherArn}/invocations"
       - prodFetcherArn: !ImportValue ProductionFetcherArn
+  # Consumption Lambda
+  ConsumptionFetcherIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UtilitiesApi
+      Description: Consumption Fetcher Lambda API GW Integration
+      IntegrationType: AWS_PROXY
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !Sub
+      - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${prodFetcherArn}/invocations"
+      - prodFetcherArn: !ImportValue ConsumptionFetcherArn
+  
+  # ---- Routes ----
+  # Report lambdas
   PublishLambdaApiRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -78,6 +95,7 @@ Resources:
       - "integrations/${downloadIntegrationId}"
       - downloadIntegrationId: !GetAtt DownloadReportIntegration.IntegrationId
       AuthorizationType: NONE
+  # Production lambdas
   ProductionUpdaterLambdaApiRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -96,6 +114,16 @@ Resources:
       - "integrations/${prodFetcherIntegrationId}"
       - prodFetcherIntegrationId: !GetAtt ProductionFetcherIntegration.IntegrationId
       AuthorizationType: NONE
+  # Consumption lambda
+  ConsumptionFetcherLambdaApiRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UtilitiesApi
+      RouteKey: "GET /api/consumption/{zone}/{date}"
+      Target: !Sub 
+      - "integrations/${prodFetcherIntegrationId}"
+      - prodFetcherIntegrationId: !GetAtt ConsumptionFetcherIntegration.IntegrationId
+      AuthorizationType: NONE
   UtilitiesApiStage:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
@@ -104,7 +132,7 @@ Resources:
       AutoDeploy: true
 Outputs:
   ApiGwUrl:
-    Description: "Publish Report API endpoint URL"
+    Description: "Utilities API endpoint URL"
     Value: !Sub "https://${UtilitiesApi}.execute-api.${AWS::Region}.amazonaws.com/${PublishStageName}"
     Export:
       Name: ApiGwUrl

@@ -5,6 +5,9 @@ Parameters:
   SnsEmail:
     Type: String
     Default: "laura.bruges.cco@immune.institute"
+  CodeBucket:
+    Type: String
+    Default: codigoscapstone-jhon
 
 # Creación de recursos
 Resources:
@@ -16,7 +19,7 @@ Resources:
       Handler: DownloadFile.lambda_handler
       Role: !Ref ExecRole
       Code: 
-        S3Bucket: codigoscapstone-jhon
+        S3Bucket: !Ref CodeBucket
         S3Key: DownloadFile.zip
       Runtime: python3.12
       Timeout: 60
@@ -32,7 +35,7 @@ Resources:
       Handler: Publishtosns.lambda_handler
       Role: !Ref ExecRole
       Code: 
-        S3Bucket: codigoscapstone-jhon
+        S3Bucket: !Ref CodeBucket
         S3Key: Publishtosns.zip
       Runtime: python3.12
       Timeout: 60

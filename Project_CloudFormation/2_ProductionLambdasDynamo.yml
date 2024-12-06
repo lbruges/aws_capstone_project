@@ -5,6 +5,9 @@ Parameters:
   ProdTableName:
     Type: String
     Default: gas_production_cost
+  CodeBucket:
+    Type: String
+    Default: codigoscapstone-jhon
 
 Resources:
   # Dynamo
@@ -34,7 +37,7 @@ Resources:
       Handler: production_fetcher.lambda_handler
       Role: !Ref ExecRole
       Code:
-        S3Bucket: codigoscapstone-jhon
+        S3Bucket: !Ref CodeBucket
         S3Key: production_fetcher.zip
       Runtime: python3.12
       Timeout: 60
@@ -45,7 +48,7 @@ Resources:
       Handler: production_updater.lambda_handler
       Role: !Ref ExecRole
       Code:
-        S3Bucket: codigoscapstone-jhon
+        S3Bucket: !Ref CodeBucket
         S3Key: production_updater.zip
       Runtime: python3.12
       Timeout: 60

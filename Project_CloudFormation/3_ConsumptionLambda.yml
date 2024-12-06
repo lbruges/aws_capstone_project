@@ -1,0 +1,35 @@
+Parameters:
+  ExecRole:
+    Type: String
+    Default: arn:aws:iam::971134353672:role/LabRole
+  CodeBucket:
+    Type: String
+    Default: codigoscapstone-jhon
+
+Resources:
+  # Lambda
+  ConsumptionFetcherFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: Lambda_ConsumptionFetcher
+      Handler: lambda_function.lambda_handler
+      Role: !Ref ExecRole
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: consumer_lambda.zip
+      Runtime: python3.12
+      Timeout: 60
+  ConsumptionApiGWPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ConsumptionFetcherFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+
+Outputs:
+  ProductionFetcherArn:
+    Description: "Consumption fetcher lambda ARN"
+    Value: !GetAtt ConsumptionFetcherFunction.Arn
+    Export:
+      Name: ConsumptionFetcherArn
