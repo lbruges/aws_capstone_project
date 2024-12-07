@@ -4,7 +4,7 @@ Parameters:
     Default: arn:aws:iam::971134353672:role/LabRole
   SnsEmail:
     Type: String
-    Default: "laura.bruges.cco@immune.institute"
+    Default: "example@test.com"
 
 # Creación de recursos
 Resources:
