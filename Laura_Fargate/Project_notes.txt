@@ -154,3 +154,5 @@ pip install --platform manylinux2014_x86_64 --target=./package --implementation 
 
 https://gist.github.com/oseiskar/dbd51a3727fc96dcf5ed189fca491fb3#file-swagger-yaml-to-html-py
 python3 swagger-yaml-to-html.py < Utilities_api_swagger.yml > doc.html
+
+https://rawcdn.githack.com/lbruges/aws_capstone_project/3bc0e769971e7a4e06b14331473a2b18fedfc184/Architecture/Documentation%20and%20testing/index.html#/default/updateProduction
