@@ -129,7 +129,7 @@ paths:
 
   /api/report/{zone}/{date}:
     get:
-      summary: Descarga de reportes
+      summary: Descargar reportes
       operationId: downloadReport
       parameters:
         - in: path
