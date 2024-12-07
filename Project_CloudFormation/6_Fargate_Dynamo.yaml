@@ -1,7 +1,7 @@
 Parameters:
   SubnetID:
     Type: String
-    Default: subnet-04b527e5b0f394118
+    Default: subnet-0f355b52eeab7a85a
   UtilImage:
     Type: String
     Default: registry.hub.docker.com/lbrug95/capstone_project

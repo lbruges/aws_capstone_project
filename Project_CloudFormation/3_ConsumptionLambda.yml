@@ -2,9 +2,7 @@ Parameters:
   ExecRole:
     Type: String
     Default: arn:aws:iam::971134353672:role/LabRole
-  CodeBucket:
-    Type: String
-    Default: codigoscapstone-jhon
+
 
 Resources:
   # Lambda
@@ -15,7 +13,7 @@ Resources:
       Handler: lambda_function.lambda_handler
       Role: !Ref ExecRole
       Code:
-        S3Bucket: !Ref CodeBucket
+        S3Bucket: !ImportValue Bucketforcodes
         S3Key: consumer_lambda.zip
       Runtime: python3.12
       Timeout: 60

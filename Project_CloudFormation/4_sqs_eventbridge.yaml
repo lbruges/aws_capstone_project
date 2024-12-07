@@ -36,7 +36,7 @@ Resources:
       Handler: SendEventToSQS.lambda_handler
       Role: !Ref ExecRole
       Code: 
-        S3Bucket: codigoscapstone-jhon
+        S3Bucket: !ImportValue Bucketforcodes
         S3Key: SendEventToSQS.zip
       Runtime: python3.12
       Timeout: 60

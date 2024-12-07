@@ -1,0 +1,13 @@
+
+Resources:
+
+  S3Bucket:    
+    Type: AWS::S3::Bucket
+
+Outputs:
+
+  Bucketcode:
+    Description: "Bucket donde se pondran todos los zip"
+    Value: !Ref S3Bucket
+    Export:
+      Name: Bucketforcodes
