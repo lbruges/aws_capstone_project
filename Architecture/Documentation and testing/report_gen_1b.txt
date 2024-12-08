@@ -1,0 +1,15 @@
+title Generación de Reportes - Parte 1b - Solicitud Inicial Fallida
+
+participant Report Enqueuer (L1)
+
+participant Utilities Queue (SQS)
+participant ECS Fargate
+
+participant Dead Letter Queue (SQS)
+
+Report Enqueuer (L1)-->Utilities Queue (SQS): Reportes a generar
+
+ECS Fargate->Utilities Queue (SQS): Escucha a mensajes de la cola
+ECS Fargate->ECS Fargate: Error
+Utilities Queue (SQS) -> Dead Letter Queue (SQS): Mensaje de reporte fallido
+Dead Letter Queue (SQS) -> SNS - Failure Reporter: Notificación de fallo

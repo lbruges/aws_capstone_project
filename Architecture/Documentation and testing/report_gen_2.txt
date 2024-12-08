@@ -1,0 +1,17 @@
+title Generación de Reportes - Parte 2 - Generación
+
+participant Utilities Queue (SQS)
+participant ECS Fargate
+
+
+ECS Fargate->Utilities Queue (SQS): Escucha a mensajes de la cola
+
+ECS Fargate->UtilitiesDB (Dynamo): Obtener utilidades actuales
+ECS Fargate->ECS Fargate: Buscar utilidades a recalcular
+ECS Fargate->Production Svc: GET /api/production/{zoneId}/{date}
+ECS Fargate->Consumption Svc: GET /api/consumption/{zoneId}/{date}
+ECS Fargate->ECS Fargate: Calcular utilidades
+ECS Fargate->UtilitiesDB (Dynamo):Almacenar utilidades para zona y mes
+ECS Fargate->ECS Fargate:Generar reportes en pdf
+ECS Fargate->S3 - Reports: Guardar reporte
+S3 - Reports-> SNS: Notificar reporte por correo
