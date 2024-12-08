@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.1">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.3">
   <diagram name="Page-1" id="4EDEGwaHf9P7v1SkHgpE">
     <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -263,7 +263,7 @@
         <mxCell id="D_zP5o6NSthtwzWJcST3-1" value="Report Notifier" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.lambda_function;fillColor=#F58534;gradientColor=none;" vertex="1" parent="1">
           <mxGeometry x="1241" y="-197" width="69" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="D_zP5o6NSthtwzWJcST3-8" value="SNS - Report&lt;br&gt;&lt;div&gt;Notifier&lt;/div&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.sns;fillColor=#D9A741;gradientColor=none;" vertex="1" parent="1">
+        <mxCell id="D_zP5o6NSthtwzWJcST3-8" value="SNS - Alerts&amp;nbsp;&lt;div&gt;Notification&lt;/div&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.sns;fillColor=#D9A741;gradientColor=none;" vertex="1" parent="1">
           <mxGeometry x="313.9999999999999" y="1050" width="76.5" height="76.5" as="geometry" />
         </mxCell>
         <mxCell id="D_zP5o6NSthtwzWJcST3-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="D_zP5o6NSthtwzWJcST3-10" target="Ejrz8QhWFEB0U392NANQ-12">
