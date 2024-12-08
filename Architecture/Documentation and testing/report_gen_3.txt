@@ -3,17 +3,20 @@ title Generación de Reportes - Parte 3 - Almacemamiento y descarga
 
 
 participant API GW
-participant Report Downloaded (L2)
+participant Report Downloader (L2)
 participant ECS Fargate
 participant S3 - Reports
-participant SNS
+participant Report Notifier (L3)
+
+participant SNS - Report Notifier
 
 group Almacenamiento de reportes
 ECS Fargate->S3 - Reports: Guardar reporte
-S3 - Reports-> SNS: Notificar reporte por correo
+S3 - Reports-> Report Notifier (L3): Notificación de reporte nuevo
+Report Notifier (L3)->SNS - Report Notifier:Notificar del reporte vía email
 end
 
 group Descarga de reporte
-API GW->Report Downloaded (L2):GET /api/report/{zoneId}/{date}
-Report Downloaded (L2)->S3:Obtener reporte para mes y zona
+API GW->Report Downloader (L2):GET /api/report/{zoneId}/{date}
+Report Downloader (L2)->S3 - Reports:Obtener reporte para mes y zona
 end
