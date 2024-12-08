@@ -1,3 +1,10 @@
+# Create database
+CREATE DATABASE `gas_provider`;
+
+USE `gas_provider`;
+
+DROP TABLE IF EXISTS `gas_consumption`;
+
 # Create query
 CREATE TABLE IF NOT EXISTS `gas_provider`.`gas_consumption` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -8,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `gas_provider`.`gas_consumption` (
   `zone` VARCHAR(10) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id`),
-  UNIQUE INDEX `address_UNIQUE` (`address`),
+  UNIQUE INDEX `address_UNIQUE` (`address`, `zone`, `month`),
   INDEX `month_year` (`month`, `year`),
   INDEX `zone` (`zone`));
 
