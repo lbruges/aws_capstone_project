@@ -14,4 +14,3 @@ ECS Fargate->ECS Fargate: Calcular utilidades
 ECS Fargate->UtilitiesDB (Dynamo):Almacenar utilidades para zona y mes
 ECS Fargate->ECS Fargate:Generar reportes en pdf
 ECS Fargate->S3 - Reports: Guardar reporte
-S3 - Reports-> SNS: Notificar reporte por correo
