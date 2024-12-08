@@ -1,0 +1,15 @@
+title Generación de Reportes - Parte 1a - Solicitud Inicial
+
+participant API GW
+participant Programmetic Generator (EventBridge)
+participant Report Enqueuer (L1)
+
+alt Petición bajo demanda
+API GW->Report Enqueuer (L1):PUT /api/report
+else Petición Programática
+Programmetic Generator (EventBridge)->Report Enqueuer (L1): Ejecución mensual
+end
+
+Report Enqueuer (L1)-->Utilities Queue (SQS): Reportes a generar
+
+ECS Fargate->Utilities Queue (SQS): Escucha a mensajes de la cola
