@@ -70,14 +70,6 @@ Resources:
       Principal: s3.amazonaws.com
       SourceAccount: !Ref 'AWS::AccountId' 
 
-  APIGWPublishPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      FunctionName: !GetAtt FunctionLambdaForPublish2.Arn
-      Action: lambda:InvokeFunction
-      Principal: apigateway.amazonaws.com
-      SourceAccount: !Ref 'AWS::AccountId' 
-
   APIGWDownloadPermission:
     Type: AWS::Lambda::Permission
     Properties:
