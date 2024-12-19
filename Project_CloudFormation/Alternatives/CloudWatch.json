@@ -1,6 +1,0 @@
-{
-    "DashboardArn": "arn:aws:cloudwatch::571561547599:dashboard/Capstone1",
-    "DashboardBody": "{\"widgets\":[{\"type\":\"metric\",\"x\":0,\"y\":0,\"width\":6,\"height\":6,\"properties\":{\"metrics\":[[\"AWS/ApiGateway\",\"Count\",\"ApiId\",\"fbbpa8gvdd\",{\"region\":\"us-east-1\"}]],\"view\":\"timeSeries\",\"stacked\":false,\"region\":\"us-east-1\",\"period\":60,\"stat\":\"Average\"}}]}",
-    "DashboardName": "Capstone1"
-}
-[cloudshell-user@ip-10-132-60-60 ~]$ 
