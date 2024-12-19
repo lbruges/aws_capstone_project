@@ -1,0 +1,12 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "CloudWatchDashboard": {
+      "Type": "AWS::CloudWatch::Dashboard",
+      "Properties": {
+        "DashboardName": "Capstone2",
+        "DashboardBody": "{\"widgets\":[{\"height\":6,\"width\":6,\"y\":0,\"x\":0,\"type\":\"metric\",\"properties\":{\"metrics\":[[\"AWS/ApiGateway\",\"Count\",\"ApiId\",\"fbbpa8gvdd\",{\"region\":\"us-east-1\"}]],\"view\":\"timeSeries\",\"stacked\":false,\"region\":\"us-east-1\",\"period\":60,\"stat\":\"Average\",\"title\":\"Peticiones API Gateway\"}},{\"type\":\"metric\",\"x\":6,\"y\":0,\"width\":6,\"height\":6,\"properties\":{\"metrics\":[[\"AWS/SQS\",\"NumberOfMessagesReceived\",\"QueueName\",\"SQSQueue\",{\"region\":\"us-east-1\"}]],\"sparkline\":false,\"view\":\"timeSeries\",\"region\":\"us-east-1\",\"stacked\":false,\"period\":300,\"stat\":\"Sum\"}},{\"type\":\"metric\",\"x\":12,\"y\":0,\"width\":6,\"height\":6,\"properties\":{\"metrics\":[[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"Lambda_ProductionUpdater\",{\"region\":\"us-east-1\"}],[\".\",\"Errors\",\".\",\".\",{\"region\":\"us-east-1\"}]],\"view\":\"pie\",\"region\":\"us-east-1\",\"period\":300,\"stat\":\"SampleCount\"}},{\"type\":\"metric\",\"x\":18,\"y\":0,\"width\":6,\"height\":6,\"properties\":{\"metrics\":[[\"AWS/SNS\",\"NumberOfNotificationsDelivered\",\"TopicName\",\"ReportedeCorreo2\",{\"region\":\"us-east-1\"}]],\"view\":\"gauge\",\"yAxis\":{\"left\":{\"min\":0,\"max\":5}},\"region\":\"us-east-1\",\"period\":300,\"stat\":\"SampleCount\"}}]}"
+      }
+    }
+  }
+}
